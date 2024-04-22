@@ -1,4 +1,4 @@
-![image](https://github.com/devnamnh2k2/BestCv/assets/121742978/dcc3d30f-e8c3-4285-934f-4018150aa012)# BestCv
+# BestCv
 Dự án phát triển hệ thống BestCv hỗ trỡ cho người tuyển dụng, người tìm việc, ... tham gia vào hệ thống giúp họ có thể tìm kiếm được công việc phù hợp cũng như là tuyển dụng được những nhân viên tương lai
 
 # Công nghệ sử dụng
