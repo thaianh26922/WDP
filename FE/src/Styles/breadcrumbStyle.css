@@ -1,0 +1,7 @@
+ul.breadcrumbb-list > li.breadcrumbb-item:not(:last-child)::after {
+    color: #bfbfc3;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    content: '/';
+
+}

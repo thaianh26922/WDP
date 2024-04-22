@@ -1,0 +1,121 @@
+.sidebar{
+    position: relative;
+    width: 336px;
+    /* height: 100vh; */
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+    padding: 24px;
+    transition: all 0.3s;
+}
+
+.sidebar .head {
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid #f6f6f6;
+
+}
+
+.nav > .menu{
+    width: 95%;
+}
+
+.menu ul li {
+    position: relative;
+    margin-bottom: 5px;
+
+}
+
+
+.menu ul li:not(:last-child){
+    border-bottom: 1px solid rgb(235, 224, 224);
+}
+
+.menu ul li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #374151;
+    text-decoration: none;
+    padding: 12px 8px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.menu ul li a.nav-link-active{
+    color:  #F03E48 !important;
+}
+
+.menu ul li a:hover,
+.menu ul li.active>a {
+    color: #000;
+    background-color: #f6f6f6;
+}
+
+.menu ul li .text {
+    flex: 1;
+}
+
+/* .menu-btn {
+    position: absolute;
+    right: 1em;
+    top: 2.4em;
+    cursor: pointer;
+} */
+
+.sidebar.active {
+    width: 92px;
+}
+
+/* .sidebar.active .menu-btn  {
+    display: none;
+} */
+
+.sidebar.active .menu ul li:not(:last-child){
+    border-bottom: 0px;
+}
+
+.sidebar.active .menu > ul > li > a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.sidebar.active .menu > ul > li > a .text {
+    position: absolute;
+    left: 70px;
+    top: 50%;
+    transform: translateY(-60%);
+    padding: 10px;
+    width: max-content;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #000;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 99;
+}
+
+.sidebar.active .menu > ul > li a .text::after{
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0.5em;
+    width: 1em;
+    height: 20px;
+    border-radius: 2px;
+    background-color: #000;
+    transform: rotate(45deg);
+    z-index: 99;
+}
+
+.sidebar.active .menu > ul > li a:hover .text{
+    left: 50px;
+    opacity: 1;
+    visibility: visible;
+}

@@ -1,0 +1,64 @@
+.notification-list {
+    background-color: white;
+    position: absolute;
+    right: 0;
+    transform: translateY(10%);
+    display: none;
+}
+
+.notification-list ul>li.notification-item {
+    list-style: circle;
+}
+
+
+.notification-list {
+    width: 25em;
+    height: 11em;
+    padding: 1em 0.5em 1em 1em;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+}
+
+.notification-list ul {
+    overflow-y: auto;
+    height: -webkit-fill-available;
+    padding: 0 2em;
+}
+
+.notification-list ul::-webkit-scrollbar {
+    width: 0.5em;
+
+}
+
+.notification-list ul::-webkit-scrollbar-track {
+    background-color: #fff;
+}
+
+.notification-list ul::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(-45deg, #6a5af9, #d66efd);
+    border-radius: 50px;
+}
+
+.notification-item-title,
+.sub-content {
+    margin-left: 1em;
+}
+
+.notification-item::marker {
+    content: "🟠";
+    color: red;
+}
+
+.sub-content {
+    padding: 1em 0 1em;
+}
+
+.notification-list.show {
+    display: block;
+    z-index: 99;
+}
+
+/* --------------------------------------------------------main */
+.form-control::placeholder {
+   font-size: small !important;
+}
