@@ -9,9 +9,12 @@ Dự án thuộc môn học SDN301m trên trường làm việc nhóm gồm 5 th
 Dự án được bắt đầu vào 18/01/2024 - 20/03/2024
 Ảnh minh chứng : 
 {
-![image](https://github.com/devnamnh2k2/BestCv/assets/121742978/346dd059-2778-4f15-ad66-44516da40945)
-![image](https://github.com/devnamnh2k2/BestCv/assets/121742978/6844fd0d-4e46-4381-b964-425b41e161f1)
+<img src="https://github.com/devnamnh2k2/BestCv/assets/121742978/346dd059-2778-4f15-ad66-44516da40945" width="128"/>
+<img src="https://github.com/devnamnh2k2/BestCv/assets/121742978/6844fd0d-4e46-4381-b964-425b41e161f1" width="128"/>
 }
+Ảnh minh họa : 
+{
 
+}
 
 
