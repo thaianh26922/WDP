@@ -38,7 +38,7 @@ export const getAllPost = createAsyncThunk('api/post/get-all-posts', async (reje
                 'Content-Type': 'application/json',
             }
         })
-
+        console.log(res);
         // console.log('line 30:', res.data);
         return res.data;
     } catch (error) {

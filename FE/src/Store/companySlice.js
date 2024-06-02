@@ -42,7 +42,7 @@ export const getACompany = createAsyncThunk('api/company/get-company-by-id', asy
 
 export const followCompany = createAsyncThunk('api/company/follow-company', async ({ id, followCompany }, { rejectWithValue }) => {
     const token = Cookies.get('accessToken');
-    const userProfile = JSON.parse(Cookies.get("user-profile"));
+    const userProfile = JSON.parse(Cookies.get("accessToken"));
     console.log(userProfile);
     try {
         const res = axios.put(`http://localhost:9999/api/user/${id}/follow-company`, {

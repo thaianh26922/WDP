@@ -63,7 +63,7 @@ function Header({ type, role }) {
                     getCurrentUser || acoountStaff ? <Authenticated /> : <NonAuthenticate />
                 }
             </div>
-            <div onClick={handleNav} ref={ref} className='abcdef block md:hidden'>
+            <div onClick={handleNav} ref={ref} className='abcdef block'>
                 <AiOutlineMenu size={30} />
             </div>
             <div className={`${nav ? 'fixed left-0 top-0 w-[60%] h-full border-r border-r-gray-50 text-white bg-[#141B46] ease-in-out duration-500' : 'fixed left-[-100%]'}`}>

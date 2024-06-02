@@ -28,6 +28,7 @@ function SubCompanyDetail(props) {
     const [itemOffset, setItemOffset] = useState(0);
     const formRef = useRef(null);
     const companydetail = useSelector((state) => state.companies.companyDetail);
+    console.log(companydetail);
     const postJob = useSelector((state) => state.jobPost.postArrForCompany);
     const getUser = useSelector((state) => state.users.currentUser);
     const dispatch = useDispatch();
@@ -55,6 +56,7 @@ function SubCompanyDetail(props) {
         else {
             console.log('line 125: ', getUser);
             let statusCompany = getUser.followCompany.find(p => companydetail._id === p);
+            console.log(statusCompany);
             let fCompany = {
                 _id: companydetail._id
             }

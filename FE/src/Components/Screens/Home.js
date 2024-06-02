@@ -6,7 +6,10 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { Button, Container } from "react-bootstrap";
 import axios from "axios";
-const options = [];
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCategory } from "../../Store/jobCategorySlice";
+import { getAllPost } from "../../Store/jobPostSlice";
+import { Link } from "react-router-dom";
 
 const time = [
     { value: 'Fulltime', label: 'Toàn thời gian' },
@@ -17,12 +20,35 @@ const location = [
     { value: 'Thành Phố Hồ Chí Minh', label: 'Thành Phố Hồ Chí Minh' },
 ];
 function Home() {
+    const dispatch = useDispatch();
+    const jobCategory = useSelector((state) => state.jobCategory.categoryArr);
+    const options = jobCategory.map(item => {
+        return {
+            value: item._id,
+            label: item.name
+        };
+    });
+    const [postArr, setPost] = useState([])
+    useEffect(() => {
+        dispatch(getAllCategory());
+        dispatch(getAllPost());
+    }, [dispatch]);
+    const post =  useSelector(state => state.jobPost.postArr);
+    useEffect(() => {
+        setPost(post)
+    }, [post]);
+    const handleSearch = (event) => {
+        const filteredResults = post.filter(item => {
+            return item.jobCategory._id == selectedOption.value
+        });
+        console.log(filteredResults);
+        setPost(filteredResults);
+    };
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectedTime, setSelectedTime] = useState(time[0]);
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [selectedPosition, setSelectedPosition] = useState([]);
     const [fragment, setFragment] = useState(1);
-
     useEffect(() => {
         const classification = document.querySelectorAll('.classification');
         classification.forEach((item) => {
@@ -49,9 +75,13 @@ function Home() {
 
     }, [])
 
-    function handleSearch(event) {
-        
+    function filterByCategory(event) {
+
     }
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-CA'); // Định dạng theo tiêu chuẩn ISO (YYYY-MM-DD)
+    };
 
     return (
         <Default>
@@ -105,109 +135,34 @@ function Home() {
             </div>
             <div className="flex flex-wrap gap-3 mx-auto w-[80%] mb-3 mt-5">
                 {/* Phần dành cho in những thông tin */}
-                <div className="w-[24%] rounded-lg shadow-xl shadow-slate-300 p-3 flex flex-col">
-                    <div className="flex flex-col">
-                        <div className="flex flex-col">
-                            <span className="font-bold ">Công ty cổ phần TMDV HGD. Công ty cổ phần TMDV HGD. Công ty cổ phần TMDV HGD</span>
-                            <div className="py-3 ">SHN Hưng Yên tuyển dụng vị trí giám đốc chi nhánh</div>
-                        </div>
-                        <p className="mt-auto flex-shrink-0">
-                            <span className="font-bold">Yêu cầu:</span>
-                            <ul className="list-disc p-3">
-                                <li>6 năm kinh nghiệm vị trí quản lý</li>
-                                <li>Có bằng cử nhân kinh tế</li>
-                                <li>Thông thạo tiếng anh</li>
-                            </ul>
-                        </p>
-                    </div>
-                    <div className="mt-auto flex-shrink-0 border-t-2">
-                        <div>Hạn ứng tuyển: <span className="font-bold">30/12/2018</span></div>
-                        <div>Địa điểm: <span className="font-bold">Hưng Yên</span></div>
-                        <div>
-                            <button className="text-white bg-[#141a45ff] rounded-md px-5 py-2 m-2">Chi tiết</button>
-                            <button className="text-white bg-[#f25b29ff] rounded-md px-4 py-2 m-2"> Ứng tuyển</button>
-                        </div>
-                    </div>
-                </div>
+                {
+                    postArr.map((value) => {
+                        return (
+                            <div className="w-[24%] rounded-lg shadow-xl shadow-slate-300 p-3 flex flex-col">
+                                <div className="flex flex-col">
+                                    <div className="flex flex-col">
+                                        <span className="font-bold ">{value.title}</span>
+                                        <div className="py-3 ">{value.jobDescription}</div>
+                                    </div>
+                                    <p className="mt-auto flex-shrink-0">
+                                        <span className="font-bold">Yêu cầu:</span>
+                                        <div dangerouslySetInnerHTML={{ __html: value.candidateReq }} />
+                                    </p>
+                                </div>
+                                <div className="mt-auto flex-shrink-0 border-t-2">
+                                    <div>Hạn ứng tuyển: <span className="font-bold">{formatDate(value.deadline)}</span></div>
+                                    <div>Địa điểm: <span className="font-bold">{value.location}</span></div>
+                                    <div>
+                                    <Link to={`/cac-cong-ty-con/company_id=${value.companyId._id}`} className='px-7 py-2 bg-green-600 text-white rounded-md mr-4 font-thin' >Chi tiết</Link>
+                                        <button className="text-white bg-[#f25b29ff] rounded-md px-4 py-2 m-2"> Ứng tuyển</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })
+                }
 
-                <div className="w-[24%] rounded-lg shadow-xl shadow-slate-300 p-3 flex flex-col">
-                    <div className="flex flex-col">
-                        <div className="flex flex-col flex-[1]">
-                            <span className="font-bold">Công ty cổ phần TMDV HGD</span>
-                            <div className="py-3 ">SHN Hưng Yên tuyển dụng vị trí giám đốc chi nhánh</div>
-                        </div>
-                        <p className="mt-auto flex-shrink-0">
-                            <span className="font-bold">Yêu cầu:</span>
-                            <ul className="list-disc p-3">
-                                <li>6 năm kinh nghiệm vị trí quản lý</li>
-                                <li>Có bằng cử nhân kinh tế</li>
-                                <li>Thông thạo tiếng anh</li>
-                            </ul>
-                        </p>
-                    </div>
-                    <div className="mt-auto flex-shrink-0 border-t-2">
-                        <div>Hạn ứng tuyển: <span className="font-bold">30/12/2018</span></div>
-                        <div>Địa điểm: <span className="font-bold">Hưng Yên</span></div>
-                        <div>
-                            <button className="text-white bg-[#141a45ff] rounded-md px-5 py-2 m-2">Chi tiết</button>
-                            <button className="text-white bg-[#f25b29ff] rounded-md px-4 py-2 m-2"> Ứng tuyển</button>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="w-[24%] rounded-lg shadow-xl shadow-slate-300 p-3 flex flex-col">
-                    <div className="flex flex-col">
-                        <div className="flex flex-col flex-[1]">
-                            <span className="font-bold">Công ty cổ phần TMDV HGD</span>
-                            <div className="py-3 ">SHN Hưng Yên tuyển dụng vị trí giám đốc chi nhánh</div>
-                        </div>
-                        <p className="mt-auto flex-shrink-0">
-                            <span className="font-bold">Yêu cầu:</span>
-                            <ul className="list-disc p-3">
-                                <li>6 năm kinh nghiệm vị trí quản lý</li>
-                                <li>Có bằng cử nhân kinh tế</li>
-                                <li>Thông thạo tiếng anh</li>
-                            </ul>
-                        </p>
-                    </div>
-                    <div className="mt-auto flex-shrink-0 border-t-2">
-                        <div>Hạn ứng tuyển: <span className="font-bold">30/12/2018</span></div>
-                        <div>Địa điểm: <span className="font-bold">Hưng Yên</span></div>
-                        <div>
-                            <button className="text-white bg-[#141a45ff] rounded-md px-5 py-2 m-2">Chi tiết</button>
-                            <button className="text-white bg-[#f25b29ff] rounded-md px-4 py-2 m-2"> Ứng tuyển</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="w-[24%] rounded-lg shadow-xl shadow-slate-300 p-3 flex flex-col">
-                    <div className="flex flex-col">
-                        <div className="flex flex-col flex-[1]">
-                            <span className="font-bold">Công ty cổ phần TMDV HGD</span>
-                            <div className="py-3 ">SHN Hưng Yên tuyển dụng vị trí giám đốc chi nhánh. SHN Hưng Yên tuyển dụng vị trí giám đốc chi nhánh
-                                SHN Hưng Yên tuyển dụng vị trí giám đốc chi nhánh. SHN Hưng Yên tuyển dụng vị trí giám đốc chi nhánh</div>
-                        </div>
-                        <p className="mt-auto flex-shrink-0">
-                            <span className="font-bold">Yêu cầu:</span>
-                            <ul className="list-disc p-3">
-                                <li>6 năm kinh nghiệm vị trí quản lý</li>
-                                <li>Có bằng cử nhân kinh tế</li>
-                                <li>Thông thạo tiếng anh</li>
-                                <li>Thông thạo tiếng anh</li>
-                                <li>Thông thạo tiếng anh</li>
-                                <li>Thông thạo tiếng anh</li>
-                            </ul>
-                        </p>
-                    </div>
-                    <div className="mt-auto flex-shrink-0 border-t-2">
-                        <div>Hạn ứng tuyển: <span className="font-bold">30/12/2018</span></div>
-                        <div>Địa điểm: <span className="font-bold">Hưng Yên</span></div>
-                        <div>
-                            <button className="text-white bg-[#141a45ff] rounded-md px-5 py-2 m-2">Chi tiết</button>
-                            <button className="text-white bg-[#f25b29ff] rounded-md px-4 py-2 m-2"> Ứng tuyển</button>
-                        </div>
-                    </div>
-                </div>
                 <button className="text-white bg-[#f25b29ff] rounded-md px-4 py-2 m-2 hover:bg-[#f25b29ff] outline-none mx-auto">Xem thêm</button>
             </div>
             <div className="ml-[15%]">

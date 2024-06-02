@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { TbBellRinging } from "react-icons/tb";
 import { TbBellRingingFilled } from "react-icons/tb";
 import { useSelector } from 'react-redux';
-import axios from 'axios';  
+import axios from 'axios';
+import { NavLink } from 'react-router-dom';
 
 function Authenticated() {
     const [notificate, setNotificate] = useState(false);
@@ -10,20 +11,20 @@ function Authenticated() {
     const getCurrentUser = useSelector((state) => state.users.currentUser);
 
     useEffect(() => {
-         
+
         const fetchNotifications = async () => {
             try {
                 const response = await axios.get('http://localhost:9999/api/notifications');
-                console.log('Notifications:', response.data);  
-                setNotifications(response.data);  
+                console.log('Notifications:', response.data);
+                setNotifications(response.data);
             } catch (error) {
                 console.error('Error fetching notifications:', error);
             }
-        };       
-      fetchNotifications();   
+        };
+        fetchNotifications();
         return () => {
         };
-    }, []);  
+    }, []);
     const handleNotificate = () => {
         setNotificate(!notificate);
     }
@@ -55,7 +56,10 @@ function Authenticated() {
                 <div className=' rounded-full bg-slate-600 mr-2'>
                     <img src={`${getCurrentUser?.avatar || '/logo192.png'}`} alt='avatar.png' width={30} height={30} />
                 </div>
-                <span className='text-sm'>{getCurrentUser?.username}</span>
+                <NavLink to={'/tai-khoan'}>
+                    <span className='text-sm'>{getCurrentUser?.username}</span>
+                </NavLink>
+
             </div>
         </>
     );

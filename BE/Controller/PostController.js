@@ -13,7 +13,7 @@ import { User } from "../Model/User.js";
 async function getAllPosts(req, res) {
     try {
         const { userId } = req.body;
-        const posts = await Post.find({status: 'Accepted'}).populate('jobCategory').populate('companyId').exec();
+        const posts = await Post.find({status: 'Accepted'}).populate('jobCategory', '_id').populate('companyId').exec();
         if (posts) {
             const postsWithFollowInfo = await Promise.all(posts.map(async (post) => {
                 const isFollowed = await User.exists({ _id: userId, savedPost: post._id }) ? true : false;

@@ -6,6 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 function RequireAuth(props) {
     const accessToken = Cookies.get("accessToken") || '';
     const getCurrentUser = useSelector((state) => state.users.currentUser);
+    console.log(getCurrentUser);
     sessionStorage.setItem('user', JSON.stringify(getCurrentUser));
     const location = useLocation();
     return (

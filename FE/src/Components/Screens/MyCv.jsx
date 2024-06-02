@@ -7,6 +7,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiPlusOutline } from "react-icons/ti";
 import { FaRegArrowAltCircleUp } from "react-icons/fa";
 import { FaRegArrowAltCircleDown } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 function MyCv(props) {
     return (
         <DashboardCustomer>
@@ -22,7 +23,7 @@ function MyCv(props) {
                             <p className=' inline-block pr-10 pb-2 font-semibold text-lg border-b-4 border-indigo-500'>Hồ sơ đã tạo</p>
                         </div>
                         <div className='btn-create text-white absolute right-6 top-6'>
-                            <button className='bg-[#1b224e] rounded-lg py-3 px-4'><span className='text-[0.9em]'>Tạo hồ sơ mới </span><TiPlusOutline size={18} className='inline-block' /></button>
+                        <Link to="/tao-cv" className='px-3 py-2  bg-orange-600 text-white rounded-md font-thin hover:bg-orange-500 focus:outline-none focus:ring focus:ring-orange-400'><span className='text-sm font-semibold'>Tạo hồ sơ mới</span></Link>
                         </div>
                         <div className='grid grid-cols-2 gap-9 mt-4'>
                             {

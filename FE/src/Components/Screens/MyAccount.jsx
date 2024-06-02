@@ -4,23 +4,28 @@ import { CiImageOn } from "react-icons/ci";
 import { RiVipCrownLine } from "react-icons/ri";
 import HeaderV2 from '../Util/Header/HeaderV2';
 import DashboardCustomer from '../Layouts/DashboardCustomer';
-import { useSelector } from 'react-redux';
-import {  useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate } from 'react-router-dom';
+import { getCurrentUser } from '../../Store/userSlice';
 function MyAccount(props) {
+    const dispatch = useDispatch();
+
     const nav = useNavigate();
     const [avatarPreview, setAvatarPreview] = useState('/logo192.png');
-    const getCurrentUser = useSelector((state) => state.users.currentUser);
+    const currentUser = useSelector((state) => state.users.currentUser);
     const token = Cookies.get("accessToken") || '';
+
+    useEffect(() => {
+        dispatch(getCurrentUser());
+    }, [dispatch]);
     // Get a reference to the storage service, which is used to create references in your storage bucket
     const storage = getStorage();
-
-
-    console.log(getCurrentUser);
+    console.log(currentUser);
     // console.log(spaceRef);
 
 
@@ -76,7 +81,7 @@ function MyAccount(props) {
         );
 
     }
-    if (getCurrentUser) {
+    if (currentUser) {
         return (
             <DashboardCustomer>
                 <HeaderV2 hrefType={'Quản lý tài khoản'} />
@@ -89,7 +94,7 @@ function MyAccount(props) {
                     <div className='flex justify-between items-center p-[2.6em]'>
                         <div className='w-[100%]'>
                             <Formik
-                                initialValues={{ phone: getCurrentUser?.phone, fullname: getCurrentUser?.username, email: getCurrentUser?.email, newpassword: '', newpassword2: '' }}
+                                initialValues={{ phone: currentUser?.phone, fullname: currentUser?.username, email: currentUser?.email, newpassword: '', newpassword2: '' }}
                                 validationSchema={Yup.object({
                                     phone: Yup.number(),
                                     fullname: Yup.string(),
@@ -103,18 +108,18 @@ function MyAccount(props) {
                                 })}
                                 onSubmit={async (values, { setSubmitting, setErrors }) => {
                                     let info = {
-                                        username: values.fullname || getCurrentUser?.username,
-                                        email: values.email || getCurrentUser?.email,
+                                        username: values.fullname || currentUser?.username,
+                                        email: values.email || currentUser?.email,
                                         phone: values.phone,
                                         ...(values.newpassword && { password: values.newpassword }),
-                                        savedPost: getCurrentUser.savedPost,
-                                        followCompany: getCurrentUser.followCompany,
+                                        savedPost: currentUser.savedPost,
+                                        followCompany: currentUser.followCompany,
                                         avatar: avatarPreview
                                     }
                                     const cookieInfo = { ...info };
                                     delete cookieInfo.password;
                                     try {
-                                        const res = await axios.put(`http://localhost:9999/api/user/update-user/${getCurrentUser?._id}`, {
+                                        const res = await axios.put(`http://localhost:9999/api/user/update-user/${currentUser?._id}`, {
                                             ...info
                                         }, {
                                             headers: {
@@ -149,7 +154,7 @@ function MyAccount(props) {
                                                                 <div className='mt-3'>
                                                                     <label htmlFor="fullname" className="block text-sm font-medium leading-6 text-gray-900">Họ và tên</label>
                                                                     <div className='input-group input-group-lg mt-2'>
-                                                                        <Field name="fullname" type="text" placeholder={getCurrentUser?.username} className={`form-control rounded ${errors.fullname && touched.fullname ? 'border-danger' : ''}`} />
+                                                                        <Field name="fullname" type="text" placeholder={currentUser?.username} className={`form-control rounded ${errors.fullname && touched.fullname ? 'border-danger' : ''}`} />
                                                                         <span className='absolute text-red-500 text-[0.7em] font-semibold left-[1em] error-message'><ErrorMessage name="fullname" /></span>
                                                                     </div>
                                                                 </div>
@@ -158,7 +163,7 @@ function MyAccount(props) {
                                                                 <div className="mt-3">
                                                                     <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">Email</label>
                                                                     <div className='input-group input-group-lg mt-2'>
-                                                                        <Field name="email" type="email" placeholder={getCurrentUser?.email} className={`form-control rounded ${errors.email && touched.email ? 'border-danger' : ''}`} />
+                                                                        <Field name="email" type="email" placeholder={currentUser?.email} className={`form-control rounded ${errors.email && touched.email ? 'border-danger' : ''}`} />
                                                                         <span className='absolute text-red-500 text-[0.7em] font-semibold left-[1em] error-message'><ErrorMessage name="email" /></span>
                                                                     </div>
                                                                 </div>
@@ -167,7 +172,7 @@ function MyAccount(props) {
                                                                 <div className="mt-3">
                                                                     <label htmlFor="phone" className="block text-sm font-medium leading-6 text-gray-900">Số điện thoại</label>
                                                                     <div className='input-group input-group-lg mt-2'>
-                                                                        <Field name="phone" type="text" placeholder={getCurrentUser?.phone} className={`form-control rounded ${errors.phone && touched.phone ? 'border-danger' : ''}`} />
+                                                                        <Field name="phone" type="text" placeholder={currentUser?.phone} className={`form-control rounded ${errors.phone && touched.phone ? 'border-danger' : ''}`} />
                                                                         <span className='absolute text-red-500 text-[0.7em] font-semibold left-[1em] error-message'><ErrorMessage name="phone" /></span>
                                                                     </div>
                                                                 </div>
@@ -211,7 +216,7 @@ function MyAccount(props) {
                                                 <div className='row text-center bg-gray-100 rounded p-4'>
                                                     <div className='col-md-12 pb-3'>
                                                         <div className='relative'>
-                                                            <img src={getCurrentUser?.avatar || avatarPreview}
+                                                            <img src={currentUser?.avatar || avatarPreview}
                                                                 alt='avatar.png' className='mx-auto rounded-full shadow-lg object-cover w-[15em] h-[14em]' />
                                                             <label htmlFor="avatar" className='p-2 mt-1 absolute cursor-pointer bg-orange-600 rounded-full bottom-[-0.9em] right-[3em]'><CiImageOn size={20} color='#fff' /></label>
                                                             <input
@@ -233,7 +238,7 @@ function MyAccount(props) {
                                                     <div className='col-md-12'>
                                                         <div className='mt-3'>
                                                             {
-                                                                getCurrentUser?.isVip ?
+                                                                currentUser?.isVip ?
                                                                     <div className='md:px-5 md:py-3 bg-orange-600 text-white rounded-md mr-4 font-medium mx-auto cursor-pointer'><RiVipCrownLine size={25} className='inline-block' /> <span>VIP</span></div>
                                                                     :
                                                                     <div className='md:px-5 md:py-3 bg-orange-600 text-white rounded-md mr-4 font-medium mx-auto cursor-pointer' onClick={() => nav('/nang-cap')}>Nâng cấp ngay</div>

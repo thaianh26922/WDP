@@ -174,10 +174,9 @@ const loginUser = async (req, res) => {
                 result: 'SUCCESS',
                 message: "Đăng nhập thành công",
                 user: authenticatedUser,
-            }, process.env.ACCESS_TOKEN_SECRET, {
-                expiresIn: process.env.JWT_EXPIRES_IN,
+            }, "ACCESS_TOKEN_SECRET", {
+                expiresIn: "100 days",
             });
-
             res.status(200).json({
                 result: 'SUCCESS',
                 message: "Đăng nhập thành công",

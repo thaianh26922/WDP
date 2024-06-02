@@ -117,6 +117,7 @@ const userSlice = createSlice({
     getCurrentUser(state) {
       const userData = Cookies.get('user-profile');
       // console.log('lien 118:', userData);
+      console.log(userData);
       if (userData) {
         try {
           state.currentUser = JSON.parse(userData);

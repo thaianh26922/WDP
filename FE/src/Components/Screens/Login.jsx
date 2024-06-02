@@ -70,14 +70,12 @@ const Login = ({ children }) => {
   useEffect(() => {
     if (statusLogin === 'succeeded') {
       toast.success('Đăng nhập thành công!');
-      setTimeout(() => {
-        nav(from, { replace: true });
-      }, 1000);
+      nav('/trang-chu')
     }
     if (statusLogin === 'failed') {
       toast.error('Đăng nhập thất bại.');
     }
-  }, [statusLogin, nav, from]);
+  }, [statusLogin]);
 
   return (
     <DefaultLogin resetEmail={resetEmail} setRestEmail={setRestEmail}

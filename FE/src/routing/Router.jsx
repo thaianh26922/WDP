@@ -59,7 +59,7 @@ const Router = () => {
             <Route path='/danh-sach-quan-li-trang-web' element={<ModController/>}/>
             <Route path='/danh-sach-quan-li-cong-ty' element={<CompanyController/>}/>
 
-            <Route element={<RequireAuth />}>
+            <Route>
                 {/* Private */}
                 <Route path='/tai-khoan' element={<MyAccount />} />
                 <Route path='/nang-cap' element={<UpgradeAccount />} />
