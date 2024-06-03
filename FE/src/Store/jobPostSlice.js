@@ -158,7 +158,6 @@ const jobPostSlice = createSlice({
     name: 'jobPost',
     initialState,
     reducers: {
-
     },
     extraReducers: (builder) => {
         builder

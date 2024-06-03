@@ -96,7 +96,7 @@ function ChatWithHR({type}) {
                                     <img src="https://via.placeholder.com/150" alt="avatar" className="h-[80px] w-[80px] object-fill rounded-full" />
                                 </div>
                                 <div id="name">
-                                    <h2>Nguyễn Văn A</h2>
+                                    <h2>Nguyễn Văn A1</h2>
                                     <div className="small italic">Công ty TNHH Wecan Group</div>
                                 </div>
                                 <div className="rounded-full bg-red-500 h-[30px] w-[30px] text-center text-white p-1">1</div>

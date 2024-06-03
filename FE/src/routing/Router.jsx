@@ -71,7 +71,7 @@ const Router = () => {
                 <Route path='/co-hoi-nghe-nghiep/:tieu-de-cong-viec' element={<JobOpportunitiesDetail />} />
                 <Route path='/lien-he-voi-nha-tuyen-dung' element={<ChatWithHR type={1} />} />
             </Route>
-            <Route element={<AuthenCompany />}>
+            <Route>
                 <Route path='/ho-so-cong-ty' element={<CompanyProfile />} />
                 <Route path='/danh-sach-nhan-vien' element={<ListEmployees />} />
                 <Route path='/dang-ky-vip' element={<VIPRegister />} />
