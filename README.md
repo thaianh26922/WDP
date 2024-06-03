@@ -5,7 +5,7 @@ Dự án phát triển hệ thống BestCv hỗ trỡ cho người tuyển dụn
 Mern Stack 
 
 # Tiến độ dự án
-Dự án thuộc môn học SDN301m trên trường làm việc nhóm gồm 5 thành viên, đánh giá tiến độ dự án là 70%
+Dự án thuộc môn học WDP trên trường làm việc nhóm gồm 3 thành viên, đánh giá tiến độ dự án là 70%
 Dự án được bắt đầu vào 18/01/2024 - 20/03/2024
 Ảnh minh chứng : 
 {
