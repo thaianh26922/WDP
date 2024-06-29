@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DashboardCustomer from '../Layouts/DashboardCustomer';
 import HeaderV2 from '../Util/Header/HeaderV2';
 import { WiTime12 } from "react-icons/wi";
 import { CiSearch } from "react-icons/ci";
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 function MyApplyJob(props) {
+    const [user, setUser] = useState(JSON.parse(Cookies.get("user-profile")))
+    const [jobApply, setJopApply] = useState([])
+    console.log(user._id);
+    useEffect(() => {
+        const getAllAppliedJobs = async () => {
+            try {
+                const res = await axios.get(`http://localhost:9999/api/apply-job/get-all-applied-jobs-by-userId/${user._id}`);
+                if (res) {
+                    await setJopApply(res.data.data);
+                    console.log(jobApply);
+                }
+            } catch (error) {
+                console.error('Lỗi lấy danh sách ứng viên đã apply', error);
+            }
+        }
+        getAllAppliedJobs();
+    }, []);
+    console.log(jobApply);
     return (
         <DashboardCustomer>
             <HeaderV2 hrefType={'Việc làm đã ứng tuyển'} />
@@ -78,43 +98,55 @@ function MyApplyJob(props) {
                             </div>
                         </form>
                     </div>
-                    {
-                        (function func() {
-                            const items = [];
-                            for (let index = 0; index < 6; index++) {
-                                items.push(
-                                    <div className=''>
-                                        <div className=' bg-gray-200 shadow-md rounded p-3'>
-                                            <div className='flex justify-between items-center'>
-                                                <h2 className='text-[0.9em] text-blue-900 font-bold py-2'>Công ty cổ phần TMDV HGD </h2>
-                                            </div>
-                                            <p className='tracking-wide mt-3'>SHN Hưng Yên tuyển dụng vị trí giám đốc chi nhánh</p>
+                    {jobApply.map((value) => {
+                        let borderColorClass = '';
+                        let statusText = '';
+                        let backgronud = '';
 
-                                            <div className='py-4 border-b border-b-gray-700'>
-                                                <h2 className='text-[1.1em] font-semibold text-black mb-2'>Yêu cầu:</h2>
-                                                <ul className='list-disc pl-5'>
-                                                    <li>6 năm kinh nghiệm vị trí quản lý</li>
-                                                    <li>Có bằng cử nhân kinh tế</li>
-                                                    <li>Thông thạo tiếng anh</li>
-                                                </ul>
-                                            </div>
-                                            <div className='pt-3 pb-1'>
-                                                <p>Hạn ứng tuyển: 30/12/2018</p>
-                                            </div>
-                                            <div className='pt-1 pb-1'>
-                                                <p>Địa điểm: Hưng Yên</p>
-                                            </div>
-                                            <div className='pt-2 pb-1'>
-                                                <button className='px-10 py-3 bg-blue-950 text-white rounded-md mr-4 font-thin'>Chi tiết</button>
-                                            </div>
-                                        </div>
+                        if (value.status === 'PENDING') {
+                            borderColorClass = 'border-red-300'; // Border màu vàng
+                            backgronud = 'bg-red-100'
+                            statusText = 'Đang duyệt';
+                        } else if (value.status === 'APPROVED') {
+                            borderColorClass = 'border-green-300'; // Border màu xanh lá cây
+                            statusText = 'Đã được duyệt';
+                            backgronud = 'bg-green-100'
+
+                        }
+                        return (
+                            <div className={`mb-4 ${borderColorClass} border-solid border-3 rounded-md`}>
+                                <div className= {`${backgronud} shadow-md rounded p-3`}>
+                                    <div className='flex justify-between items-center'>
+                                        <h2 className='text-[0.9em] text-blue-900 font-bold py-2'>{value.companyId.name}</h2>
                                     </div>
-                                )
-                            }
-                            return items;
-                        })()
-                    }
-                    {/* //////////////////// */}
+                                    <p className='tracking-wide mt-3'>{value.companyId.bio}</p>
+
+                                    <div className='py-4 border-b border-b-gray-700'>
+                                        <h2 className='text-[1.1em] font-semibold text-black mb-2'>Yêu cầu:</h2>
+                                        <ul className='list-disc pl-5'>
+                                            <li>6 năm kinh nghiệm vị trí quản lý</li>
+                                            <li>Có bằng cử nhân kinh tế</li>
+                                            <li>Thông thạo tiếng anh</li>
+                                        </ul>
+                                    </div>
+                                    <div className='pt-3 pb-1'>
+                                        <p>Hạn ứng tuyển: 30/12/2018</p>
+                                    </div>
+                                    <div className='pt-1 pb-1'>
+                                        <p>Địa điểm: Hưng Yên</p>
+                                    </div>
+                                    <div className='pt-2 pb-1'>
+                                         <button className='px-10 py-3 bg-blue-950 text-white rounded-md mr-4 font-thin'>Chi tiết</button>
+                                       
+                                    </div>
+                                    <p className='text-sm text-gray-500'>{statusText}</p>
+                                </div>
+                            </div>
+                        );
+                    })}
+
+
+
                     <div className="flex items-center gap-4">
                         <button disabled
                             className="flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
@@ -125,7 +157,7 @@ function MyApplyJob(props) {
                             </svg>
                             Previous
                         </button>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 w-[100%]">
                             <button
                                 className="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg bg-orange-600 text-center align-middle font-sans text-xs font-medium uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 type="button">

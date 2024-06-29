@@ -6,6 +6,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import DashboardCustomer from '../Layouts/DashboardCustomer';
 import HeaderV2 from '../Util/Header/HeaderV2';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 function HRManagerCandidatesList(props) {
     const [togNavBar, setTogNavBar] = useState('Open');
     const [candidate, setCandidate] = useState([]);
@@ -25,27 +26,27 @@ function HRManagerCandidatesList(props) {
         }
         getAllAppliedJobs();
     }, []);
-
-    // async function handleApproveCandidate(id, status) {
-    //     const res = await axios.post('http://localhost:9999/api/apply-job/accept-candidate', {
-    //         id: id,
-    //         status: status
-    //     }).catch(err => console.error(err));
-    //     try {
-    //         const data = res.data;
-    //         console.log(data);
-    //         if (data && data.result === 'SUCCESS') {
-    //             toast.success('Duyệt ứng viên thành công');
-    //             const newCandidate = candidate.filter(c => c._id !== id);
-    //             setCandidate(newCandidate);
-    //         } else {
-    //             toast.error('Duyệt ứng viên thất bại');
-    //         }
-    //     } catch (error) {
-    //         toast.error('Lỗi duyệt ứng viên');
-    //         console.log(error);
-    //     }
-    // }
+    console.log(candidate);
+    async function handleApproveCandidate(id, status) {
+        const res = await axios.post('http://localhost:9999/api/apply-job/accept-candidate', {
+            id: id,
+            status: status
+        }).catch(err => console.error(err));
+        try {
+            const data = res.data;
+            console.log(data);
+            if (data && data.result === 'SUCCESS') {
+                toast.success('Duyệt ứng viên thành công');
+                const newCandidate = candidate.filter(c => c._id !== id);
+                setCandidate(newCandidate);
+            } else {
+                toast.error('Duyệt ứng viên thất bại');
+            }
+        } catch (error) {
+            toast.error('Lỗi duyệt ứng viên');
+            console.log(error);
+        }
+    }
     return (
         <DashboardCustomer roleCo={'Danh sách công ty'} setTogNavBar={setTogNavBar} togNavBar={togNavBar} useNavBarV2={true} >
             <HeaderV2 hrefType={'Danh sách ưng viên'} />
@@ -80,25 +81,31 @@ function HRManagerCandidatesList(props) {
                                         </svg></a>
                                     </div>
                                 </th>
+                                <th scope='col' className='px-1 py-1'>
+                                    <div class="flex items-center">
+                                        Accept/Denied
+                                        
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {candidate.length > 0 ? candidate.map((c, index) => (
                                 <tr class="bg-white border-b border-gray-200">
                                     <th scope="row" class="px-3 py-4 font-medium text-gray-900 whitespace-nowrap text-center">
-                                        {c.userId.name ? c.userId.name : c.userId.email}
+                                        {c.cvApplies[0].email}
                                     </th>
                                     <td class="px-3 py-4">
-                                        {c.postId?.title}
+                                    {c.cvApplies[0].chucvu}
                                     </td>
 
                                     <td class="px-3 py-4">
-                                        <a href={`http://localhost:9999/api/apply-job/asset/${c.cv}/${c.userId.email}`}><MdOutlineRemoveRedEye size={20} className='cursor-pointer' /></a>
+                                        <a href={`http://localhost:9999/api/apply-job/asset/${c.cv}/${c.cvApplies[0].email}`}><MdOutlineRemoveRedEye size={20} className='cursor-pointer' /></a>
                                     </td>
-                                    {/* <td class="px-3 py-4 flex gap-x-3">
+                                    <td class="px-3 py-4 flex gap-x-3">
                                         <button onClick={() => handleApproveCandidate(c._id, 'APPROVED')}><IoCheckmarkDoneCircle size={20} color='#219c1b' className='cursor-pointer' /></button>
                                         <button onClick={() => handleApproveCandidate(c._id, 'REJECTED')} ><MdCancel size={20} color='#d63434' className='cursor-pointer' /></button>
-                                    </td> */}
+                                    </td>
                                 </tr>
                             )) : <tr className='text-center'>Không có dữ liệu</tr>
                             }

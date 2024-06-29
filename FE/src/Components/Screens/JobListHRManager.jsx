@@ -63,7 +63,7 @@ function JobListHRManager(props) {
             });
 
             console.log(res.data.status);
-            if (res.data.status === "accepted") {
+            if (res.data.status === "Accepted") {
                 window.alert('Cập nhật trạng thái bài viết hiển thị');
             } else if (res.data.status = "Pending") {
                 window.alert('Cập nhật trạng thái bài viết chờ');
@@ -82,7 +82,7 @@ function JobListHRManager(props) {
 
     function getColorForStatus(status) {
         switch (status) {
-            case 'accepted':
+            case 'Accepted':
                 return 'green';
             case 'Pending':
                 return 'yellow';
@@ -157,7 +157,7 @@ function JobListHRManager(props) {
                                                     onChange={(e) => handleEdit(post._id, e.target.value)}
                                                     className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-blue-500"
                                                 >
-                                                    <option value='accepted' style={{ color: "green" }} selected={post.status === 'accepted'}>Accepted</option>
+                                                    <option value='Accepted' style={{ color: "green" }} selected={post.status === 'Accepted'}>Accepted</option>
                                                     <option value='Pending' style={{ color: "yellow" }} selected={post.status === 'Pending'}>Pending</option>
                                                     <option value="rejected" style={{ color: "red" }} selected={post.status === 'rejected'}>Rejected</option>
                                                 </select>

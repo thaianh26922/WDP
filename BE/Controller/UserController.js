@@ -5,14 +5,8 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import { Post } from "../Model/Post.js";
 import { Company } from "../Model/Company.js";
+import { CV } from "../Model/CvApply.js";
 
-/**
- * @description register user
- * @created 2024-01-18
- * @author Duong Thanh Luan
- * @param {*} req 
- * @param {*} res 
- */
 const insertUser = async (req, res) => {
     try {
         const now = new Date();

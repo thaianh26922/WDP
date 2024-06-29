@@ -24,10 +24,10 @@ function createPaymentURL(req, res, next) {
     let returnUrl = config.vnp_ReturnUrl;
     let orderId = moment(date).format('DDHHmmss');
     let amount = req.body.amount;
-    let bankCode = req.body.bankCode;
+    let bankCode = 'VNBANK';
     companyId = req.body.companyId;
     status = req.body.status;
-    config.vnp_ReturnScreen = req.body.returnUrl;
+    config.vnp_ReturnScreen = config.vnp_ReturnUrl;
 
     let locale = req.body.language;
     if (locale === null || locale === '') {
@@ -38,12 +38,12 @@ function createPaymentURL(req, res, next) {
     vnp_Params['vnp_Version'] = '2.1.0';
     vnp_Params['vnp_Command'] = 'pay';
     vnp_Params['vnp_TmnCode'] = tmnCode;
-    vnp_Params['vnp_Locale'] = locale;
+    vnp_Params['vnp_Locale'] = 'vn';
     vnp_Params['vnp_CurrCode'] = currCode;
     vnp_Params['vnp_TxnRef'] = orderId;
     vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
     vnp_Params['vnp_OrderType'] = 'other';
-    vnp_Params['vnp_Amount'] = amount * 100;
+    vnp_Params['vnp_Amount'] = 10000 * 100;
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
     vnp_Params['vnp_IpAddr'] = ipAddr;
     vnp_Params['vnp_CreateDate'] = createDate;
@@ -64,6 +64,7 @@ function createPaymentURL(req, res, next) {
 
 
 function vnPayReturn(req, res, next) {
+    console.log("accessed");
     let vnp_Params = req.query;
     let secureHash = vnp_Params['vnp_SecureHash'];
     delete vnp_Params['vnp_SecureHash'];

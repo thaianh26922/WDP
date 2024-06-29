@@ -92,7 +92,7 @@ function Footer(props) {
                 </div>
                 <div className='text-white text-center flex flex-col justify-end'>
                     <div className=' bg-orange-600 p-3'>
-                        <p className='tracking-wide'>©2024 SDN301m, All Rights Reserved</p>
+                        <p className='tracking-wide'>©2024 WDP, All Rights Reserved</p>
                     </div>
                 </div>
             </div>

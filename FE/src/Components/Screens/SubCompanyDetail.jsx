@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { followCompany, getACompany, unfollowCompany } from '../../Store/companySlice';
 import { FiPhoneCall } from "react-icons/fi";
-import { MdOutlineEmail } from "react-icons/md";
+import { MdMessage, MdOutlineEmail, MdPhone } from "react-icons/md";
 import { FaHeart } from "react-icons/fa";
 import { CiLocationOn } from "react-icons/ci";
 import { CiSearch } from "react-icons/ci";
@@ -23,23 +23,24 @@ import { followPost, getAllPostByIdCompany, unfollowPost } from '../../Store/job
 import UsePagination from '../Util/Pagination/UsePagination';
 const itemsPerPage = 4;
 function SubCompanyDetail(props) {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        console.log("ssss");
+        dispatch(getACompany(param['ten-cong-ty-con'].split('=')[1]));
+        dispatch(getAllPostByIdCompany(param['ten-cong-ty-con'].split('=')[1]));
+    }, [dispatch])
     const [provinceChoose, setProvinceChoose] = useState('');
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [itemOffset, setItemOffset] = useState(0);
-    const formRef = useRef(null);
+    const formRef = useRef(null); 
     const companydetail = useSelector((state) => state.companies.companyDetail);
     console.log(companydetail);
     const postJob = useSelector((state) => state.jobPost.postArrForCompany);
     const getUser = useSelector((state) => state.users.currentUser);
-    const dispatch = useDispatch();
     const param = useParams();
     const nav = useNavigate();
 
-
-    useEffect(() => {
-        dispatch(getACompany(param['ten-cong-ty-con'].split('=')[1]));
-        dispatch(getAllPostByIdCompany(param['ten-cong-ty-con'].split('=')[1]));
-    }, [dispatch])
+   
 
     useEffect(() => {
         const filteredData = postJob.map((pp, index) => {
@@ -185,6 +186,19 @@ function SubCompanyDetail(props) {
                                     <p className=''>Địa chỉ</p>
                                     <p className='text-[1em]  intro-content'>{companydetail.location}</p>
                                 </div>
+                                
+                            </div>
+                            <div className='flex items-center'>
+                                <div className='icon-phone p-2.5 mr-3 bg-[#1F2F65] rounded-full text-white'>
+                                    
+                                    <Link to={`/lien-he-voi-nha-tuyen-dung`}><MdMessage size={15} /></Link>
+
+                                </div>
+                                <div className='content_icon text-left text-[0.8em]'>
+                                    <p className=''>Liên hệ Hr</p>
+                                    <p className='text-[1em]  intro-content'>{companydetail.hr?.account}</p>
+                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -266,7 +280,7 @@ function SubCompanyDetail(props) {
                             </div>
                         </div>
                     </div>
-                    {/* <div className="mt-10 lg:col-span-2 w-full">
+                    <div className="mt-10 lg:col-span-2 w-full">
                         <h2 className=' text-white text-left font-semibold bg-gradient-to-r from-[#1F2F65] to-[#5569ac] p-3 rounded-t-lg'>Xem bản đồ</h2>
                         <iframe
                             title="google map"
@@ -278,7 +292,7 @@ function SubCompanyDetail(props) {
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"
                         ></iframe>
-                    </div> */}
+                    </div>
                 </div>
             </div>
 

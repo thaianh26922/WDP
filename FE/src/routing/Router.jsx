@@ -76,7 +76,7 @@ const Router = () => {
                 <Route path='/danh-sach-nhan-vien' element={<ListEmployees />} />
                 <Route path='/dang-ky-vip' element={<VIPRegister />} />
             </Route>
-            <Route element={<AuthenStaff />}>
+            <Route>
                 <Route path='/tao-bai-tuyen-dung' element={<RecruimentPostHR />} />
                 <Route path='/chinh-sua-bai-tuyen-dung/:pid' element={<EditPostHR />} />
                 <Route path='/danh-sach-cong-viec' element={<JobListHR />} />
@@ -92,6 +92,6 @@ const Router = () => {
         </Routes>
     );
 };
-
+//match job to cvrt5
 export default Router;
 

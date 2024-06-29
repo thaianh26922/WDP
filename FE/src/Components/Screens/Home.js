@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllCategory } from "../../Store/jobCategorySlice";
 import { getAllPost } from "../../Store/jobPostSlice";
 import { Link } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const time = [
     { value: 'Fulltime', label: 'Toàn thời gian' },
@@ -34,8 +35,35 @@ function Home() {
         dispatch(getAllPost());
     }, [dispatch]);
     const post =  useSelector(state => state.jobPost.postArr);
-    useEffect(() => {
-        setPost(post)
+    console.log(post);
+    const fetchPostbyUser = async (idUser) => {
+            try{
+                const postByUser =await axios.get(`http://localhost:9999/api/cv/${idUser}/chucvu`) ;
+            console.log(postByUser.data.chucvu );
+            console.log(options);
+            const filteredResults = post.filter(item => {
+                return options.some(option => 
+                    item.jobCategory._id === option.value && option.label === postByUser.data.chucvu
+                );
+            });
+            
+            console.log(filteredResults);
+            setPost(filteredResults);
+            }catch{
+                setPost(post)
+
+            }
+        }
+        const [user, setUser] = useState(() => {
+            const userProfile = Cookies.get("user-profile");
+            return userProfile ? JSON.parse(userProfile) : null; // Hoặc giá trị mặc định khác
+          });
+        useEffect(() => {
+        if(user != null){
+            fetchPostbyUser(user._id)
+        }else{
+            setPost(post)
+        }
     }, [post]);
     const handleSearch = (event) => {
         const filteredResults = post.filter(item => {

@@ -1,4 +1,4 @@
-import Message from '../Model/Message.js';
+import Message from '../Model/Messages.js';
 
 async function sendMessage(req, res) {
     try {

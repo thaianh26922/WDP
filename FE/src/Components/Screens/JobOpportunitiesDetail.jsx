@@ -9,16 +9,18 @@ import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import HTMLReactParser from "html-react-parser";
+import Cookies from 'js-cookie';
+
 function JobOpportunitiesDetail(props) {
   const [showReportModal, setShowReportModal] = useState(false);
   const [pdfFile, setPdfFile] = useState(null);
   const [openModal, setOpenModal] = useState(false);
-  const [user, setUser] = useState(JSON.parse(sessionStorage.getItem('user')));
+	const user = JSON.parse(Cookies.get("user-profile"))
   const [isApplied, setIsApplied] = useState(false);
 
   console.log('user: ', user);
   const handleReportClick = () => {
-    setShowReportModal(true);
+    setShowReportModal(true); 
   };
 
   const handleCloseModal = () => {
@@ -281,8 +283,8 @@ function JobOpportunitiesDetail(props) {
               </h2>
               <ul className="list-disc pl-5">
                 <li>{postdetail.candidateReq}</li>
-                {/* <li>Có bằng cử nhân kinh tế</li> */}
-                {/* <li>Thông thạo tiếng Anh</li> */}
+                <li>Có bằng cử nhân kinh tế</li> */
+                {/* <li>Thông thạo tiếng Anh</li>
               </ul>
             </div>
 
@@ -301,19 +303,19 @@ function JobOpportunitiesDetail(props) {
             <h2 className="text-[1.1em] font-semibold text-blue-900 mb-2">
               Số lượng:
             </h2>
-            {/* <p>1 người</p> */}
+            <p>1 người</p>
           </div>
           <div className="custom-section mb-4">
             <h2 className="text-[1.1em] font-semibold text-blue-900 mb-2">
               Vị trí làm việc:
             </h2>
-            {/* <p>Chuyên Viên Quản Lý Dự Án - Phòng Phát Triển Dự Án</p> */}
+            <p>Chuyên Viên Quản Lý Dự Án - Phòng Phát Triển Dự Án</p>
           </div>
           <div className="custom-section mb-5">
             <h2 className="text-[1.1em] font-semibold text-blue-900 mb-2">
               Hình thức:
             </h2>
-            {/* <p>Làm việc toàn thời gian tại công ty</p> */}
+            <p>Làm việc toàn thời gian tại công ty</p>
           </div>
           <div className="custom-section mb-4">
             <h2 className="text-[1.5em] font-semibold text-blue-900 mb-2">
@@ -375,6 +377,41 @@ function JobOpportunitiesDetail(props) {
         </div>
       )}
       </section>
+
+      {openModal && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white w-[500px] rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-bold mb-4">Tải lên CV của bạn</h2>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => setPdfFile(e.target.files[0])}
+              id="cv-opener"
+              className="hidden"
+            />
+            <div className="flex justify-between mt-4">
+              <button
+                className="bg-orange-500 text-white px-4 py-2 rounded"
+                onClick={handleClick}
+              >
+                Chọn CV
+              </button>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={onUpload}
+              >
+                Ứng tuyển
+              </button>
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+                onClick={() => setOpenModal(false)}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <ToastContainer/>
     </Default>
   );

@@ -1,75 +1,24 @@
-import { useEffect, useRef, useState } from "react";
-import Default from "../Layouts/Default";
-import socketIOClient from "socket.io-client";
-import NoFooter from "../Layouts/NoFooter";
-import { useSelector } from "react-redux";
-import { io } from 'socket.io-client'
+import { useEffect, useRef, useState } from 'react'
 import Img1 from '../../assets/img1.jpg'
 import tutorialsdev from '../../assets/tutorialsdev.png'
-import Input from '../Input/index.js'
-import Cookies from 'js-cookie';
+import Input from '../../components/Input'
+import { io } from 'socket.io-client'
 
-function ChatWithHR({type}) {
-    const [user, setUser] = useState(JSON.parse(Cookies.get("user-profile")))
+const Dashboard = () => {
+	const [user, setUser] = useState(JSON.parse(localStorage.getItem('user:detail')))
 	const [conversations, setConversations] = useState([])
 	const [messages, setMessages] = useState({})
 	const [message, setMessage] = useState('')
 	const [users, setUsers] = useState([])
 	const [socket, setSocket] = useState(null)
 	const messageRef = useRef(null)
-    const companydetail = useSelector((state) => state.companies.companyDetail);
-	console.log(companydetail);
-	const fetchAndSetConversations = async () => {
-        const loggedInUser = JSON.parse(Cookies.get("user-profile"));
-        const res = await fetch(`http://localhost:9999/api/conversations/${loggedInUser?._id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-        const resData = await res.json();
-        console.log(resData);
 
-        const findReceiver = resData.find(value => {
-            return value.user.receiverId === companydetail?.hr._id;
-        });
-        
-        if(findReceiver == null){
-            console.log("no conversation");
-            await createNewConversation(loggedInUser._id, companydetail?.hr._id);
-            fetchAndSetConversations(); // Gọi lại hàm fetchAndSetConversations
-        } else {
-            console.log(resData);
-            setConversations(resData);
-        }
-    };
-
-    const createNewConversation = async (senderId, receiverId) => {
-        const resNew = await fetch(`http://localhost:9999/api/conversation`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                senderId,
-                receiverId
-            })
-        });
-        const resNewData = await resNew.json();
-        console.log(resNewData);
-        return resNewData;
-    };
-
-    useEffect(() => {
-        fetchAndSetConversations();
-    }, []);
-console.log(conversations);
 	useEffect(() => {
-		setSocket(io('http://localhost:8081'))
+		setSocket(io('http://localhost:8080'))
 	}, [])
 
 	useEffect(() => {
-		socket?.emit('addUser', user?._id);
+		socket?.emit('addUser', user?.id);
 		socket?.on('getUsers', users => {
 			console.log('activeUsers :>> ', users);
 		})
@@ -85,10 +34,24 @@ console.log(conversations);
 		messageRef?.current?.scrollIntoView({ behavior: 'smooth' })
 	}, [messages?.messages])
 
+	useEffect(() => {
+		const loggedInUser = JSON.parse(localStorage.getItem('user:detail'))
+		const fetchConversations = async () => {
+			const res = await fetch(`http://localhost:8000/api/conversations/${loggedInUser?.id}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			});
+			const resData = await res.json()
+			setConversations(resData)
+		}
+		fetchConversations()
+	}, [])
 
 	useEffect(() => {
 		const fetchUsers = async () => {
-			const res = await fetch(`http://localhost:9999/api/users/${user?._id}`, {
+			const res = await fetch(`http://localhost:8000/api/users/${user?.id}`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -101,8 +64,7 @@ console.log(conversations);
 	}, [])
 
 	const fetchMessages = async (conversationId, receiver) => {
-		console.log(receiver);
-		const res = await fetch(`http://localhost:9999/api/message/${conversationId}?senderId=${user?._id}&&receiverId=${receiver?._id}`, {
+		const res = await fetch(`http://localhost:8000/api/message/${conversationId}?senderId=${user?.id}&&receiverId=${receiver?.receiverId}`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -115,19 +77,19 @@ console.log(conversations);
 	const sendMessage = async (e) => {
 		setMessage('')
 		socket?.emit('sendMessage', {
-			senderId: user?._id,
+			senderId: user?.id,
 			receiverId: messages?.receiver?.receiverId,
 			message,
 			conversationId: messages?.conversationId
 		});
-		const res = await fetch(`http://localhost:9999/api/message`, {
+		const res = await fetch(`http://localhost:8000/api/message`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
 				conversationId: messages?.conversationId,
-				senderId: user?._id,
+				senderId: user?.id,
 				message,
 				receiverId: messages?.receiver?.receiverId
 			})
@@ -140,7 +102,7 @@ console.log(conversations);
 				<div className='flex items-center my-8 mx-14'>
 					<div><img src={tutorialsdev} width={75} height={75} className='border border-primary p-[2px] rounded-full' /></div>
 					<div className='ml-8'>
-						<h3 className='text-2xl'>{user?.username}</h3>
+						<h3 className='text-2xl'>{user?.fullName}</h3>
 						<p className='text-lg font-light'>My Account</p>
 					</div>
 				</div>
@@ -156,7 +118,7 @@ console.log(conversations);
 											<div className='cursor-pointer flex items-center' onClick={() => fetchMessages(conversationId, user)}>
 												<div><img src={Img1} className="w-[60px] h-[60px] rounded-full p-[2px] border border-primary" /></div>
 												<div className='ml-6'>
-													<h3 className='text-lg font-semibold'>{user?.username}</h3>
+													<h3 className='text-lg font-semibold'>{user?.fullName}</h3>
 													<p className='text-sm font-light text-gray-600'>{user?.email}</p>
 												</div>
 											</div>
@@ -167,13 +129,13 @@ console.log(conversations);
 					</div>
 				</div>
 			</div>
-			<div className='w-[75%] h-screen bg-white flex flex-col items-center'>
+			<div className='w-[50%] h-screen bg-white flex flex-col items-center'>
 				{
-					messages?.receiver?.username &&
+					messages?.receiver?.fullName &&
 					<div className='w-[75%] bg-secondary h-[80px] my-14 rounded-full flex items-center px-14 py-2'>
 						<div className='cursor-pointer'><img src={Img1} width={60} height={60} className="rounded-full" /></div>
 						<div className='ml-6 mr-auto'>
-							<h3 className='text-lg'>{messages?.receiver?.username}</h3>
+							<h3 className='text-lg'>{messages?.receiver?.fullName}</h3>
 							<p className='text-sm font-light text-gray-600'>{messages?.receiver?.email}</p>
 						</div>
 						<div className='cursor-pointer'>
@@ -193,7 +155,7 @@ console.log(conversations);
 								messages.messages.map(({ message, user: { id } = {} }) => {
 									return (
 										<>
-										<div className={`max-w-[40%] rounded-b-xl p-4 mb-6 ${id === user?._id ? 'bg-primary text-white rounded-tl-xl ml-auto' : 'bg-secondary rounded-tr-xl'} `}>{message}</div>
+										<div className={`max-w-[40%] rounded-b-xl p-4 mb-6 ${id === user?.id ? 'bg-primary text-white rounded-tl-xl ml-auto' : 'bg-secondary rounded-tr-xl'} `}>{message}</div>
 										<div ref={messageRef}></div>
 										</>
 									)
@@ -202,7 +164,7 @@ console.log(conversations);
 					</div>
 				</div>
 				{
-					messages?.receiver?.username &&
+					messages?.receiver?.fullName &&
 					<div className='p-14 w-full flex items-center'>
 						<Input placeholder='Type a message...' value={message} onChange={(e) => setMessage(e.target.value)} className='w-[75%]' inputClassName='p-4 border-0 shadow-md rounded-full bg-light focus:ring-0 focus:border-0 outline-none' />
 						<div className={`ml-4 p-2 cursor-pointer bg-light rounded-full ${!message && 'pointer-events-none'}`} onClick={() => sendMessage()}>
@@ -223,9 +185,29 @@ console.log(conversations);
 					</div>
 				}
 			</div>
-		
+			<div className='w-[25%] h-screen bg-light px-8 py-16 overflow-scroll'>
+				<div className='text-primary text-lg'>People</div>
+				<div>
+					{
+						users.length > 0 ?
+							users.map(({ userId, user }) => {
+								return (
+									<div className='flex items-center py-8 border-b border-b-gray-300'>
+										<div className='cursor-pointer flex items-center' onClick={() => fetchMessages('new', user)}>
+											<div><img src={Img1} className="w-[60px] h-[60px] rounded-full p-[2px] border border-primary" /></div>
+											<div className='ml-6'>
+												<h3 className='text-lg font-semibold'>{user?.fullName}</h3>
+												<p className='text-sm font-light text-gray-600'>{user?.email}</p>
+											</div>
+										</div>
+									</div>
+								)
+							}) : <div className='text-center text-lg font-semibold mt-24'>No Conversations</div>
+					}
+				</div>
+			</div>
 		</div>
 	)
 }
 
-export default ChatWithHR;
+export default Dashboard

@@ -1,5 +1,6 @@
 import multer from 'multer';
 import { ApplyJob } from '../Model/ApplyJob.js';
+import mongoose from 'mongoose';
 
 async function applyJob(req, res) {
     const { userId, postId, cv, companyId } = req.body;
@@ -93,25 +94,78 @@ async function getAllAppliedJob(req, res) {
         });
     }
 }
-
-async function getAllAppliedJobOfPost(req, res) {
+async function getAllAppliedJobByUserId(req, res) {
     try {
-        const { companyId } = req.params;
-        const appliedJob = await ApplyJob.find({ companyId: companyId, status: 'APPROVED' }).exec();
+        const { userId } = req.params;
+
+        const appliedJobs = await ApplyJob.find({ userId: userId })
+            .populate({
+                path: 'companyId', // Trường companyId trong ApplyJob
+                model: 'Company' // Tên mô hình của Company
+            })
+            .exec();
+
         res.status(200).json({
             result: 'SUCCESS',
-            message: 'SUCCESS - Lấy danh sách apply job thành công',
-            data: appliedJob
+            message: 'SUCCESS - Lấy danh sách apply job theo userId thành công',
+            data: appliedJobs
         });
     } catch (error) {
         res.status(400).json({
             result: 'FAIL',
-            message: 'FAIL - Lấy danh sách apply job không thành công',
-
-        })
+            message: 'FAIL - Lấy danh sách apply job theo userId không thành công',
+            error: error.message
+        });
     }
-
 }
+async function getAllAppliedJobOfPost(req, res) {
+    try {
+        const { companyId } = req.params;
+
+        // Dùng aggregate để kết hợp dữ liệu từ hai bảng
+        const appliedJobs = await ApplyJob.aggregate([
+            { $match: { companyId: mongoose.Types.ObjectId.createFromHexString(companyId), status: 'PENDING' } }, // Chuyển companyId sang ObjectId
+            {
+                $lookup: {
+                    from: 'cvapplies', // Tên của collection CvApply
+                    let: { userId: '$userId' }, // Biến phụ để truyền userId từ ApplyJob vào CvApply
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: [ '$idUser' , { $toString: '$$userId' }] } // Chuyển _id thành string để so sánh
+                            }
+                        }
+                    ],
+                    as: 'cvApplies' // Tên trường sẽ chứa kết quả lookup
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    userId: 1,
+                    postId: 1,
+                    companyId: 1,
+                    status: 1,
+                    cv : 1,
+                    cvApplies: 1 // Giữ nguyên các tài liệu từ CvApply đã lấy được
+                }
+            }
+        ]);
+
+        res.status(200).json({
+            result: 'SUCCESS',
+            message: 'SUCCESS - Lấy danh sách apply job thành công',
+            data: appliedJobs
+        });
+    } catch (error) {
+        res.status(400).json({
+            result: 'FAIL',
+            message: 'FAIL - Lấy danh sách apply job không thành công',
+            error: error.message // Thêm thông tin lỗi để dễ debug
+        });
+    }
+}
+
 
 async function changeApplieJobStatus(req, res) {
     const { id, status } = req.body;
@@ -137,4 +191,4 @@ async function changeApplieJobStatus(req, res) {
         });
     }
 }
-export default { applyJob, uploadCV, isAppliedJob, getAllAppliedJob, changeApplieJobStatus, getAllAppliedJobOfPost };
+export default { applyJob, uploadCV, isAppliedJob, getAllAppliedJob, changeApplieJobStatus, getAllAppliedJobOfPost , getAllAppliedJobByUserId };

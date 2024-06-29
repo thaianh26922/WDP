@@ -16,7 +16,7 @@ function ListSubCompany(props) {
     const location = useLocation();
     const dispatch = useDispatch();
     const nav = useNavigate();
-
+    
 
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);

@@ -35,7 +35,7 @@ function MyCv(props) {
                                                 <img src={imgTemplateCV} alt="templateCV.png" className='w-full h-full object-cover mix-blend-multiply' />
                                             </div>
                                             <div className='absolute bottom-5 left-4 text-white'>
-                                                <div className='title-cv mb-3'><h4 className='text-[1.3em] font-serif'>CV của My</h4></div>
+                                                <div className='title-cv mb-3'><h4 className='text-[1.3em] font-serif'>CV của Tôi</h4></div>
                                                 <div className='flex justify-start gap-3'>
                                                     <button type='button' className='bg-[#141b46] py-2 px-3 rounded'> <span className='text-[0.8em]'>Chỉnh sửa</span> <FiEdit size={18} className='inline-block' /></button>
                                                     <button type='button' className='bg-red-600 py-2 px-3 rounded'><RiDeleteBin6Line size={18} /></button>

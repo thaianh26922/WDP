@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Company } from "../Model/Company.js";
+import { Staff } from "../Model/Staff.js";
 
 /**
  * @des Hàm lấy tất cả các công ty
@@ -99,25 +100,32 @@ async function getCompanyById(req, res) {
         const company = await Company.findById(id);
         // Kiểm tra xem công ty truy vấn có dữ liệu không
         if (company != null) {
+            // Tìm nhân viên có vai trò HR và có companyId trùng với company._id
+            const hr = await Staff.findOne({ companyId: company._id, role: 'HR' });
+            console.log(company);
+            console.log(hr);
             return res.status(200).json({
                 result: 'SUCCESS',
-                message: `SUCCES - Lấy công ty có id ${id} thành công`,
-                data: company
-            })
+                message: `SUCCESS - Lấy công ty có id ${id} thành công`,
+                data: {
+                    ...company.toObject(),
+                    hr: hr ? hr : null // Nếu tìm thấy hr thì trả về, nếu không thì trả về null
+                }
+            });
         } else {
             return res.status(404).json({
                 result: 'FAIL',
-                message: `FAIL - Không tồn tại công ty với id ${id}`
-            })
+                message: `FAIL - Không tồn tại công ty với id ${id}`
+            });
         }
     } catch (error) {
         return res.status(500).json({
             result: 'ERROR',
-            message: `ERROR - Đã có lỗi xảy ra`,
-            error: error
-        })
+            message: `ERROR - Đã có lỗi xảy ra`,
+            error: error.message
+        });
     }
-};
+}
 
 
 

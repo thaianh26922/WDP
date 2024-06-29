@@ -11,6 +11,7 @@ ApplyJobRouter.post('/apply', ApplyJobController.applyJob);
 ApplyJobRouter.post('/is-applied', ApplyJobController.isAppliedJob);
 ApplyJobRouter.get('/get-all-applied-jobs', ApplyJobController.getAllAppliedJob);
 ApplyJobRouter.get('/get-all-applied-jobs-approved/:companyId', ApplyJobController.getAllAppliedJobOfPost);
+ApplyJobRouter.get('/get-all-applied-jobs-by-userId/:userId', ApplyJobController.getAllAppliedJobByUserId);
 
 
 ApplyJobRouter.get('/asset/:cv/:name/:email', async function (req, res) {

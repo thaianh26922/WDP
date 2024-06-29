@@ -26,6 +26,7 @@ export const getAllCompany = createAsyncThunk('api/company/get-all-companies', a
 })
 
 export const getACompany = createAsyncThunk('api/company/get-company-by-id', async (id, { rejectWithValue }) => {
+    console.log(id);
     try {
         const res = await axios.get(`http://localhost:9999/api/company/get-by-id-company/${id}`, {
             headers: {
@@ -37,7 +38,7 @@ export const getACompany = createAsyncThunk('api/company/get-company-by-id', asy
         return res.data;
     } catch (error) {
         return rejectWithValue(error.response.data);
-    }
+    } 
 });
 
 export const followCompany = createAsyncThunk('api/company/follow-company', async ({ id, followCompany }, { rejectWithValue }) => {
