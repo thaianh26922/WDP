@@ -10,7 +10,9 @@ import Input from '../Input/index.js'
 import Cookies from 'js-cookie';
 
 function ChatWithHR({type}) {
-    const [user, setUser] = useState(JSON.parse(Cookies.get("user-profile")))
+	const getUsers = useSelector(state => state.users.currentUser);
+
+    const [user, setUser] = useState(getUsers);
 	const [conversations, setConversations] = useState([])
 	const [messages, setMessages] = useState({})
 	const [message, setMessage] = useState('')
@@ -18,9 +20,24 @@ function ChatWithHR({type}) {
 	const [socket, setSocket] = useState(null)
 	const messageRef = useRef(null)
     const companydetail = useSelector((state) => state.companies.companyDetail);
-	console.log(companydetail);
+	const loggedInUser = useSelector((state) => state.users.currentUser);
+	function isEmpty(obj) {
+		for (let key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				return false;
+			}
+		}
+		return true;
+	}
 	const fetchAndSetConversations = async () => {
-        const loggedInUser = JSON.parse(Cookies.get("user-profile"));
+		const getId = '';
+		
+		if(!isEmpty(loggedInUser)){
+			
+		}else{
+		const staff = sessionStorage.getItem('staff');
+			console.log(staff);
+		}
         const res = await fetch(`http://localhost:9999/api/conversations/${loggedInUser?._id}`, {
             method: 'GET',
             headers: {
@@ -29,12 +46,13 @@ function ChatWithHR({type}) {
         });
         const resData = await res.json();
         console.log(resData);
-
-        const findReceiver = resData.find(value => {
-            return value.user.receiverId === companydetail?.hr._id;
-        });
-        
-        if(findReceiver == null){
+		
+		
+			const findReceiver = resData.find(value => {
+				return value.user.receiverId === companydetail?.hr._id;
+			});
+		
+        if(findReceiver == null && !isEmpty(companydetail)){
             console.log("no conversation");
             await createNewConversation(loggedInUser._id, companydetail?.hr._id);
             fetchAndSetConversations(); // Gọi lại hàm fetchAndSetConversations

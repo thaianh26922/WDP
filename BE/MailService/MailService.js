@@ -6,8 +6,8 @@ const transporter = nodemailer.createTransport({
     port: 465,
     secure: true,
     auth: {
-        user: "luanduong14@gmail.com",
-        pass: "ujyb nvtn giso ujjk",
+        user: "anhpthe161502@fpt.edu.vn",
+        pass: "lncu wezr xpah qzdu",
     },
 })
 
@@ -16,7 +16,7 @@ async function mail(user, subject, code) {
     try {
         // send mail with defined transport object
         const info = await transporter.sendMail({
-            from: '"BestCV" <luanduong14@gmail.com>', // sender address
+            from: '"BestCV" <anhpthe161502@fpt.edu.vn>', // sender address
             to: user.email, // list of receivers
             subject: subject, // Subject line
 

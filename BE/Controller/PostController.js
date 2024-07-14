@@ -40,13 +40,7 @@ async function getAllPosts(req, res) {
 }
 
 
-/**
- * @name: insertPost
- * @param {*} req 
- * @param {*} res 
- * @author LuanDT7
- * @date 2024-01-19
- */
+
 async function insertPost(req, res) {
     try {
         const { HRId, companyId, title, jobDescription, jobCategory, salary, candidateReq, location, deadline } = req.body;
@@ -86,13 +80,7 @@ async function insertPost(req, res) {
 
 
 
-/**
- * @name getPost()
- * @param {*} req 
- * @param {*} res 
- * @author LuanDT7
- * @date 2024-01-19
- */
+
 async function getPostById(req, res) {
     const { id } = req.params;
     const { userId } = req.body;
@@ -119,13 +107,7 @@ async function getPostById(req, res) {
     }
 }
 
-/**
- * @name updatePost
- * @param {*} req 
- * @param {*} res 
- * @name LuanDT7
- * @date 2024-01-19
- */
+
 async function updatePost(req, res) {
     const postId = req.params.id;
     try {

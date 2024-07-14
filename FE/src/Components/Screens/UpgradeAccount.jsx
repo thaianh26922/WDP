@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import DashboardCustomer from '../Layouts/DashboardCustomer';
 import HeaderV2 from '../Util/Header/HeaderV2';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPayment } from '../../Store/paymentSlice';
+import Cookies from 'js-cookie';
 
 function UpgradeAccount(props) {
+    const [user, setUser] = useState(JSON.parse(Cookies.get("user-profile")))
     const dispatch = useDispatch();
     const getCurrentUser = useSelector((state) => state.users.currentUser);
     const statusPay = useSelector((state) => state.payments.statusPayment);
@@ -16,7 +18,8 @@ function UpgradeAccount(props) {
             amount: '100000',
             bankCode: 'VNBANK',
             language: 'vn',
-            returnUrl: 'http://localhost:3000/tai-khoan'
+            returnUrl: 'http://localhost:3000/tai-khoan',
+            userId: user._id
         }
         await dispatch(createPayment({data}));
     }

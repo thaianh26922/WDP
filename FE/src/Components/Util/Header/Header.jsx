@@ -10,7 +10,7 @@ function Header({ type, role }) {
     const getCurrentUser = useSelector((state) => state.users.currentUser);
     const acoountStaff = JSON.parse(sessionStorage.getItem('staff')) || '';
     const ref = useRef(null);
-
+    console.log(getCurrentUser);
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (ref.current && !ref.current.contains(e.target)) {
@@ -34,29 +34,31 @@ function Header({ type, role }) {
     console.log('Header', acoountStaff);
 
 
-
+    const toPath = getCurrentUser === null ? "/lien-he-voi-nha-tuyen-dung" : (getCurrentUser?.isVip ? "/lien-he-voi-nha-tuyen-dung" : "/nang-cap");
+    console.log(toPath);
+    console.log(getCurrentUser);
     return (
         <header className='flex  min-[414px]:justify-between  lg:justify-evenly items-center text-white h-20 mx-auto px-4 bg-blue-950'>
             <div>
                 <img src={logo} alt='logo.png' width={50} height={50} />
             </div>
             <ul className='pl-2 pr-2 md:max-lg:text-sm  md:flex hidden'>
-                {type === 2 ?
-                    <>
-                        <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink to={'/danh-sach-cong-viec'} className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Danh sách công việc</NavLink></li>
-                        <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink to={'/danh-sach-ung-vien'} className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Danh sách ứng viên</NavLink></li>
-                        <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink to={'/lien-he'} className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Chat</NavLink></li>
-                        <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Tư vấn</NavLink></li>
-                    </>
-                    :
-                    <>
-                        <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Tuyển dụng</NavLink></li>
-                        <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink to={'/cac-cong-ty-con'} className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Các công ty con</NavLink></li>
-                        <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink to={'/co-hoi-nghe-nghiep'} className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Cơ hội nghề nghiệp</NavLink></li>
-                        <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Tư vấn</NavLink></li>
-                        <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Liên hệ</NavLink></li>
-                    </>
-                }
+
+                <>
+                    <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Tuyển dụng</NavLink></li>
+                    <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink to={'/cac-cong-ty-con'} className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Các công ty con</NavLink></li>
+                    <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink to={'/co-hoi-nghe-nghiep'} className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Cơ hội nghề nghiệp</NavLink></li>
+                    <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'>
+                        <NavLink
+                            to={toPath}
+                            className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}
+                        >
+                            Chat
+                        </NavLink>
+                    </li>
+                    {/* <li className='p-[1.75rem] cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Liên hệ</NavLink></li> */}
+                </>
+
             </ul>
             <div className=' hidden md:hidden lg:flex md:max-lg:text-sm'>
                 {
@@ -76,7 +78,7 @@ function Header({ type, role }) {
                             <>
                                 <li className='p-4  border-b hover:text-gray-900 hover:bg-orange-600 ease-linear duration-200'><NavLink className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Danh sách công việc</NavLink></li>
                                 <li className='p-4  border-b cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Danh sách ứng viên</NavLink></li>
-                                <li className='p-4  border-b cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Chat</NavLink></li>
+                                <li className='p-4  border-b cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink to={"/lien-he-voi-nha-tuyen-dung"} className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Chat</NavLink></li>
                                 <li className='p-4  border-b cursor-pointer hover:bg-orange-600 ease-linear duration-200'><NavLink className={({ isActive }) => (isActive ? "border-b-4 border-orange-500" : "")}>Tư vấn</NavLink></li>
                             </>
                             :

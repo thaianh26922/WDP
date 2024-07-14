@@ -34,34 +34,39 @@ function Home() {
         dispatch(getAllCategory());
         dispatch(getAllPost());
     }, [dispatch]);
-    const post =  useSelector(state => state.jobPost.postArr);
-    console.log(post);
+    const post = useSelector(state => state.jobPost.postArr);
     const fetchPostbyUser = async (idUser) => {
-            try{
-                const postByUser =await axios.get(`http://localhost:9999/api/cv/${idUser}/chucvu`) ;
-            console.log(postByUser.data.chucvu );
-            console.log(options);
+        try {
+            const postByUser = await axios.get(`http://localhost:9999/api/cv/${idUser}/chucvu`);
+
             const filteredResults = post.filter(item => {
-                return options.some(option => 
+                return options.some(option =>
                     item.jobCategory._id === option.value && option.label === postByUser.data.chucvu
                 );
             });
-            
-            console.log(filteredResults);
-            setPost(filteredResults);
-            }catch{
-                setPost(post)
 
+            if (postByUser != null) {
+                if (filteredResults.length > 0) {
+                    setPost(filteredResults);
+                } else {
+                    setPost(post);
+                }
+            } else {
+                setPost(post);
             }
+        } catch {
+            setPost(post);
         }
-        const [user, setUser] = useState(() => {
-            const userProfile = Cookies.get("user-profile");
-            return userProfile ? JSON.parse(userProfile) : null; // Hoặc giá trị mặc định khác
-          });
-        useEffect(() => {
-        if(user != null){
+    }
+
+    const [user, setUser] = useState(() => {
+        const userProfile = Cookies.get("user-profile");
+        return userProfile ? JSON.parse(userProfile) : null; // Hoặc giá trị mặc định khác
+    });
+    useEffect(() => {
+        if (user != null) {
             fetchPostbyUser(user._id)
-        }else{
+        } else {
             setPost(post)
         }
     }, [post]);
@@ -113,7 +118,7 @@ function Home() {
 
     return (
         <Default>
-            <div className="relative">
+            <div className="relative" style={{ zIndex: 0 }}>
                 <img src={background} alt="background" className="w-ful object-cover opacity-90" />
                 <div className="absolute text-center bottom-0 left-[32em] translate-y-[-30%]">
                     <span className="text-5xl font-serif font-semibold text-white ">Tham gia cùng BestCV !</span>
@@ -181,7 +186,7 @@ function Home() {
                                     <div>Hạn ứng tuyển: <span className="font-bold">{formatDate(value.deadline)}</span></div>
                                     <div>Địa điểm: <span className="font-bold">{value.location}</span></div>
                                     <div>
-                                    <Link to={`/cac-cong-ty-con/company_id=${value.companyId._id}`} className='px-7 py-2 bg-green-600 text-white rounded-md mr-4 font-thin' >Chi tiết</Link>
+                                        <Link to={`/cac-cong-ty-con/company_id=${value.companyId._id}`} className='px-7 py-2 bg-green-600 text-white rounded-md mr-4 font-thin' >Chi tiết</Link>
                                         <button className="text-white bg-[#f25b29ff] rounded-md px-4 py-2 m-2"> Ứng tuyển</button>
                                     </div>
                                 </div>
@@ -190,9 +195,11 @@ function Home() {
                     })
                 }
 
-
-                <button className="text-white bg-[#f25b29ff] rounded-md px-4 py-2 m-2 hover:bg-[#f25b29ff] outline-none mx-auto">Xem thêm</button>
+               
             </div>
+            <div className="flex justify-center mt-[5%]">
+                    <button className="text-white bg-[#f25b29ff] rounded-md px-4 py-2 m-2 hover:bg-[#f25b29ff] outline-none mx-auto">Xem thêm</button>
+                </div>
             <div className="ml-[15%]">
                 <p className="text-2xl font-['time'] font-bold text-[#203066ff]">Các công ty thành viên khác</p>
                 <p>Hãy cùng chúng tôi chia sẻ niềm đam mê với biển cả tham gia vào các sự kiện độc đáo mà <br />

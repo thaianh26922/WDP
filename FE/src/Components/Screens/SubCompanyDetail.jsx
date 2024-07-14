@@ -32,7 +32,7 @@ function SubCompanyDetail(props) {
     const [provinceChoose, setProvinceChoose] = useState('');
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [itemOffset, setItemOffset] = useState(0);
-    const formRef = useRef(null); 
+    const formRef = useRef(null);
     const companydetail = useSelector((state) => state.companies.companyDetail);
     console.log(companydetail);
     const postJob = useSelector((state) => state.jobPost.postArrForCompany);
@@ -40,7 +40,6 @@ function SubCompanyDetail(props) {
     const param = useParams();
     const nav = useNavigate();
 
-   
 
     useEffect(() => {
         const filteredData = postJob.map((pp, index) => {
@@ -186,19 +185,18 @@ function SubCompanyDetail(props) {
                                     <p className=''>Địa chỉ</p>
                                     <p className='text-[1em]  intro-content'>{companydetail.location}</p>
                                 </div>
-                                
+
                             </div>
                             <div className='flex items-center'>
                                 <div className='icon-phone p-2.5 mr-3 bg-[#1F2F65] rounded-full text-white'>
-                                    
-                                    <Link to={`/lien-he-voi-nha-tuyen-dung`}><MdMessage size={15} /></Link>
-
+                                    <Link to={getUser.isVip ? `/lien-he-voi-nha-tuyen-dung` : `/nang-cap`}>
+                                        <MdMessage size={15} />
+                                    </Link>
                                 </div>
                                 <div className='content_icon text-left text-[0.8em]'>
                                     <p className=''>Liên hệ Hr</p>
-                                    <p className='text-[1em]  intro-content'>{companydetail.hr?.account}</p>
+                                    <p className='text-[1em] intro-content'>{companydetail.hr?.account}</p>
                                 </div>
-                                
                             </div>
                         </div>
                     </div>

@@ -57,13 +57,7 @@ async function isCompanyExist(user, companyId) {
     return false;
 }
 
-/**
- * @description Update user through id
- * @created 2024-01-18
- * @author Duong Thanh Luan
- * @param {*} req 
- * @param {*} res 
- */
+
 const updateUser = async (req, res) => {
     const userID = req.params.id;
     try {
@@ -92,25 +86,14 @@ const updateUser = async (req, res) => {
     }
 };
 
-/**
- * @des Gửi mã code cho người dùng thông qua email
- * @author Dương Thành Luân
- * @date 2024-01-26
- * @param {*} user 
- */
+
 async function sendEmail(user) {
     const code = Math.floor(Math.random() * (9999 - 1000)) + 1000;
     mail(user, "BestCV - Cấp mã xác nhận", code);
     return code;
 }
 
-/**
- * @description Xử lí quên mật khẩu
- * @created 2024-01-18
- * @author Duong Thanh Luan
- * @param {*} req 
- * @param {*} res 
- */
+
 const forgotPassword = async (req, res) => {
     const email = req.body.email;
     try {
@@ -145,13 +128,6 @@ const forgotPassword = async (req, res) => {
 };
 
 
-/**
- * @description đăng nhập vào hệ thống 
- * @created 2024-01-18
- * @author Duong Thanh Luan
- * @param {*} req 
- * @param {*} res 
- */
 const loginUser = async (req, res) => {
     const email = req.body.email;
     const uPassword = req.body.password;
@@ -193,13 +169,6 @@ const loginUser = async (req, res) => {
 };
 
 
-/**
- * @author Dương Thành Luân
- * @description Cho người dùng đăng kí công việc
- * @param {*} req 
- * @param {*} res 
- * @returns 
- */
 const applyJob = async (req, res) => {
     const { userId, postId } = req.body;
     try {
@@ -227,14 +196,6 @@ const applyJob = async (req, res) => {
     }
 }
 
-/**
- * @author LuanDT7
- * @date 2024-02-04
- * @description Hàm theo dõi công ty
- * @param {*} req 
- * @param {*} res 
- * @returns 
- */
 async function unfollowPost(req, res) {
     const { savedPost } = req.body;
     const { userId } = req.params;

@@ -2,13 +2,7 @@ import axios from "axios";
 import { Company } from "../Model/Company.js";
 import { Staff } from "../Model/Staff.js";
 
-/**
- * @des Hàm lấy tất cả các công ty
- * @author Duong Thanh Luan
- * @param {*} req 
- * @param {*} res 
- * @returns 
- */
+
 async function getAllCompanies(req, res) {
     try {
         const companies = await Company.find({});
@@ -32,14 +26,6 @@ async function getAllCompanies(req, res) {
     }
 }
 
-/**
- * @des Hàm thêm tài khoản và dữ liệu công ty trong màn hình
- * @author Duong Thanh Luan
- * @day 2024-01-25
- * @param {*} req 
- * @param {*} res 
- * @returns 
- */
 async function insertCompany(req, res) {
     let id;
     try {
@@ -86,14 +72,7 @@ async function insertCompany(req, res) {
     }
 }
 
-/**
- * @des Hàm lấy dữ liệu của công ty từ id
- * @author Duong Thanh Luan
- * @day 2024-01-25
- * @param {*} req 
- * @param {*} res 
- * @returns 
- */
+
 async function getCompanyById(req, res) {
     const { id } = req.params;
     try {
