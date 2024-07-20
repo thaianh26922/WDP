@@ -54,29 +54,54 @@ io.on('connection', socket => {
     console.log(users);
 
     socket.on('sendMessage', async ({ senderId, receiverId, message, conversationId }) => {
-        const receiver = users.find(user => user.userId === receiverId);
-        const sender = users.find(user => user.userId === senderId);
-        const user = await User.findById(senderId);
-        console.log(receiver);
-        if (receiver) {
-            io.to(receiver.socketId).to(sender.socketId).emit('getMessage', {
+        let receiver = users.find(user => user.userId === receiverId);
+        let sender = users.find(user => user.userId === senderId);
+        let user = await User.findById(senderId);
+    
+        if (!receiver) {
+            receiver = await Staff.findOne({ _id: receiverId });
+        }
+    
+        if (!sender) {
+            sender = await Staff.findOne({ _id: senderId });
+        } 
+    
+        if (!user) {
+            user = await Staff.findOne({ _id: senderId });
+        }
+    
+        console.log('Receiver:', receiver);
+        console.log('Sender:', sender);
+        console.log('User:', user);
+    
+        const userInfo = user 
+            ? { id: user._id, fullName: user.username, email: user.email }
+            : { id: user._id, fullName: user.account, email: 'Unknown' };
+        console.log(userInfo);
+    
+        // Emit to receiver if receiver is found
+        if (receiver && receiver.socketId) {
+            io.to(receiver.socketId).emit('getMessage', {
                 senderId,
                 message,
                 conversationId,
                 receiverId,
-                user: { id: user._id, fullName: user.fullName, email: user.email }
+                user: userInfo
             });
-            }else {
-                io.to(sender.socketId).emit('getMessage', {
-                    senderId,
-                    message,
-                    conversationId,
-                    receiverId,
-                    user: { id: user._id, fullName: user.fullName, email: user.email }
-                });
-            }
-        });
-
+        }
+    
+        // Emit to sender if sender is found
+        if (sender && sender.socketId) {
+            io.to(sender.socketId).emit('getMessage', {
+                senderId,
+                message,
+                conversationId,
+                receiverId,
+                user: userInfo
+            });
+        }
+    });
+    
     socket.on('disconnect', () => {
         users = users.filter(user => user.socketId !== socket.id);
         io.emit('getUsers', users);
@@ -91,7 +116,7 @@ app.use('/api/user', UserRouter);
 app.use('/api/post', PostRouter);
 app.use('/api/report', ReportRouter);
 app.use('/api/company', CompanyRouter)
-app.use('/api/staff', StaffRouter)
+app.use('/api/staff', StaffRouter) 
 app.use('/api/job-category', JobCategoryRouter)
 app.use('/api/hr-manager', HrManagerRouter)
 app.post('/api/tao-cv', async (req, res) => {
@@ -184,7 +209,7 @@ app.post('/api/conversation', async (req, res) => {
 app.get('/api/conversations/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
-        console.log(userId);
+        console.log("line 187" + userId);
         const conversations = await Conversation.find({ members: { $in: [userId] } });
         const conversationUserData = Promise.all(conversations.map(async (conversation) => {
             const receiverId = conversation.members.find((member) => member !== userId);
@@ -192,7 +217,6 @@ app.get('/api/conversations/:userId', async (req, res) => {
             if(user == null){
                 const staff = await Staff.findById(receiverId)
                 return { user: { receiverId: staff._id, email: "hr", username: staff.account }, conversationId: conversation._id }
-
             }else{
                 return { user: { receiverId: user._id, email: user.email, username: user.username }, conversationId: conversation._id }
             }
@@ -231,7 +255,14 @@ app.get('/api/message/:conversationId', async (req, res) => {
             const messages = await Messages.find({ conversationId });
             const messageUserData = Promise.all(messages.map(async (message) => {
                 const user = await User.findById(message.senderId);
-                return { user: { id: user._id, email: user.email, fullName: user.username }, message: message.message }
+                if(user == null){
+                    const user = await Staff.findById(message.senderId);
+                    return { user: { id: user._id, email: '', fullName: user.account }, message: message.message }
+
+                }else{
+                    return { user: { id: user._id, email: user.email, fullName: user.username }, message: message.message }
+
+                }
             }));
             res.status(200).json(await messageUserData);
         }
@@ -285,6 +316,6 @@ server.listen(serverPort, () => {
     console.log(`Server is running on port ${serverPort}`);
 });
 
-app.listen(port, () => {
+app.listen(port, () => { 
     console.log(`Example app listening at http://localhost:${port}`);
 });
