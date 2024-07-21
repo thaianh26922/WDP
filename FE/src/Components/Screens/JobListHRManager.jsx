@@ -11,13 +11,14 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-
 function JobListHRManager(props) {
     const [togNavBar, setTogNavBar] = useState('Open');
     const [posts, setPosts] = useState([]);
     const [staff, setStaff] = useState(JSON.parse(sessionStorage.getItem('HRManager')));
     const [editingIndex, setEditingIndex] = useState(null);
-    const nativigation = useNavigate();
+    const [searchTerm, setSearchTerm] = useState(""); // Thêm trạng thái searchTerm
+    const navigate = useNavigate();
+
     useEffect(() => {
         document.title = 'Danh sách công việc';
         async function getAllJobs() {
@@ -33,7 +34,7 @@ function JobListHRManager(props) {
     }, [])
 
     function updatePost(id) {
-        nativigation(`/chinh-sua-bai-tuyen-dung/${id}`);
+        navigate(`/chinh-sua-bai-tuyen-dung/${id}`);
     }
 
     function deletePost(id) {
@@ -65,7 +66,7 @@ function JobListHRManager(props) {
             console.log(res.data.status);
             if (res.data.status === "Accepted") {
                 window.alert('Cập nhật trạng thái bài viết hiển thị');
-            } else if (res.data.status = "Pending") {
+            } else if (res.data.status === "Pending") {
                 window.alert('Cập nhật trạng thái bài viết chờ');
             } else {
                 window.alert('Cập nhật trạng thái bài viết loại');
@@ -79,6 +80,29 @@ function JobListHRManager(props) {
             console.error(error);
         }
     };
+    let filteredPosts = posts.filter((post) =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const handleReject = async (postId) => {
+        try {
+            const res = await axios.put(`http://localhost:9999/api/post/accept-post`, {
+                id: postId,
+                statusPost: 'Rejected',
+            });
+
+            if (res.status === 200) {
+                const updatedPosts = posts.map(post =>
+                    post._id === postId ? { ...post, status: 'Rejected' } : post
+                );
+                filteredPosts = updatePost;
+                // setPosts(updatedPosts);
+                toast.success('Bài viết đã được chuyển sang trạng thái Rejected');
+            }
+        } catch (error) {
+            toast.error('Đã có lỗi xảy ra trong quá trình cập nhật trạng thái bài viết');
+            console.error(error);
+        }
+    };
 
     function getColorForStatus(status) {
         switch (status) {
@@ -86,17 +110,23 @@ function JobListHRManager(props) {
                 return 'green';
             case 'Pending':
                 return 'yellow';
-            case 'rejected':
+            case 'Rejected':
                 return 'red';
             default:
                 return 'black'; // Màu mặc định nếu không có trạng thái nào khớp
         }
     }
 
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+  
+
     return (
         <DashboardCustomer roleCo={'Danh sách công ty'} setTogNavBar={setTogNavBar} togNavBar={togNavBar} useNavBarV2={true} >
             <HeaderV2 hrefType={'Xem bài viết'} />
-            <section id='section-header' className=' bg-gradient-to-r from-[#4973CE] to-[#47BDE1] text-gray-200'>
+            <section id='section-header' className='bg-gradient-to-r from-[#4973CE] to-[#47BDE1] text-gray-200'>
                 <div className='pl-[9em] py-16'>
                     <Breadcrumb text1={'Trang chủ'} text2={'Danh sách công việc'} />
                     <h2 className='text-[2em] font-semibold leading-7 py-3'>Danh sách công việc</h2>
@@ -104,26 +134,34 @@ function JobListHRManager(props) {
                 </div>
             </section>
             <section id='list-feature-jobs' className='grid lg:grid-cols-1 gap-9 sm:w-[509px] lg:w-[1290px] mx-auto mt-5 mb-5'>
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    {/* <Link to={'/tao-bai-tuyen-dung'}><div className='text-end my-2  '><button className='p-2 rounded-sm text-white bg-orange-600'>Tạo bài tuyển dụng</button></div></Link> */}
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-white uppercase bg-gradient-to-r from-[#4973CE] to-[#47BDE1]">
+                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <div className='text-end my-2'>
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm theo tên"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            className="p-2 rounded-sm border border-gray-300"
+                        />
+                    </div>
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-white uppercase bg-gradient-to-r from-[#4973CE] to-[#47BDE1]">
                             <tr>
-                                <th scope="col" class="px-3 py-3 text-center">
+                                <th scope="col" className="px-3 py-3 text-center">
                                     Tên
                                 </th>
                                 <th scope='col' className='px-3 py-3'>
-                                    <div class="flex items-center">
+                                    <div className="flex items-center">
                                         Lương
-                                        <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <a href="#"><svg className="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                                         </svg></a>
                                     </div>
                                 </th>
                                 <th scope='col' className='px-3 py-3'>
-                                    <div class="flex items-center">
+                                    <div className="flex items-center">
                                         Trạng thái
-                                        <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <a href="#"><svg className="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                                         </svg></a>
                                     </div>
@@ -134,22 +172,22 @@ function JobListHRManager(props) {
                                 <th scope='col' className='px-3 py-3'>
                                     Địa điểm
                                 </th>
-                                <th scope="col" class="px-3 py-3">
+                                <th scope="col" className="px-3 py-3">
                                     Quản lý
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                posts && posts.map((post, index) => (
-                                    <tr className="bg-white border-b border-gray-200" key={post._id}>
-                                        <th scope="row" class="px-3 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                filteredPosts && filteredPosts.map((post, index) => (
+                                    <tr className={`bg-white border-b border-gray-200 ${post.status === 'Rejected' ? 'bg-red-100' : ''}`} key={post._id}>
+                                        <th scope="row" className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap">
                                             {post.title}
                                         </th>
                                         <td className="px-3 py-4">
                                             {post.salary === '' ? 'Thỏa thuận' : post.salary}
                                         </td>
-                                        <td className="px-3 py-4cursor-pointer" onClick={() => setEditingIndex(index)}
+                                        <td className="px-3 py-4 cursor-pointer" onClick={() => setEditingIndex(index)}
                                             style={{ color: getColorForStatus(post.status) }}>
 
                                             {editingIndex === index ? (
@@ -159,13 +197,13 @@ function JobListHRManager(props) {
                                                 >
                                                     <option value='Accepted' style={{ color: "green" }} selected={post.status === 'Accepted'}>Accepted</option>
                                                     <option value='Pending' style={{ color: "yellow" }} selected={post.status === 'Pending'}>Pending</option>
-                                                    <option value="rejected" style={{ color: "red" }} selected={post.status === 'rejected'}>Rejected</option>
+                                                    <option value="Rejected" style={{ color: "red" }} selected={post.status === 'Rejected'}>Rejected</option>
                                                 </select>
                                             ) : (
                                                 post.status
                                             )}
                                         </td>
-                                        <td class="px-3 py-4">
+                                        <td className="px-3 py-4">
                                             {formatDate(new Date(post.deadline))}
                                         </td>
                                         <td className="px-3 py-4">
@@ -173,7 +211,7 @@ function JobListHRManager(props) {
                                         </td>
                                         <td className="px-3 py-4 flex gap-x-3 justify-center">
                                             <MdOutlineRemoveRedEye size={20} color='#1c2551' className='cursor-pointer' onClick={() => updatePost(post._id)} />
-                                            <IoCheckmarkDoneCircle size={20} color='#d63434' className='cursor-pointer posts' onClick={() => deletePost(post._id)} />
+                                            <IoCheckmarkDoneCircle size={20} color='#d63434' className='cursor-pointer posts' onClick={() => handleReject(post._id)} />
                                         </td>
                                     </tr>
                                 ))

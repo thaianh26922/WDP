@@ -189,7 +189,7 @@ function SubCompanyDetail(props) {
                             </div>
                             <div className='flex items-center'>
                                 <div className='icon-phone p-2.5 mr-3 bg-[#1F2F65] rounded-full text-white'>
-                                    <Link to={getUser.isVip ? `/lien-he-voi-nha-tuyen-dung` : `/nang-cap`}>
+                                    <Link to={getUser?.isVip ? `/lien-he-voi-nha-tuyen-dung` : `/nang-cap`}>
                                         <MdMessage size={15} />
                                     </Link>
                                 </div>

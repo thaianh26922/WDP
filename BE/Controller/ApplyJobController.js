@@ -124,7 +124,11 @@ async function getAllAppliedJobOfPost(req, res) {
 
         // Dùng aggregate để kết hợp dữ liệu từ hai bảng
         const appliedJobs = await ApplyJob.aggregate([
-            { $match: { companyId: mongoose.Types.ObjectId.createFromHexString(companyId), status: 'PENDING' } }, // Chuyển companyId sang ObjectId
+            { 
+                $match: { 
+                    companyId: mongoose.Types.ObjectId.createFromHexString(companyId) 
+                } 
+            }, // Chuyển companyId sang ObjectId
             {
                 $lookup: {
                     from: 'cvapplies', // Tên của collection CvApply
@@ -132,7 +136,7 @@ async function getAllAppliedJobOfPost(req, res) {
                     pipeline: [
                         {
                             $match: {
-                                $expr: { $eq: [ '$idUser' , { $toString: '$$userId' }] } // Chuyển _id thành string để so sánh
+                                $expr: { $eq: [ '$idUser', { $toString: '$$userId' }] } // Chuyển _id thành string để so sánh
                             }
                         }
                     ],
@@ -146,7 +150,7 @@ async function getAllAppliedJobOfPost(req, res) {
                     postId: 1,
                     companyId: 1,
                     status: 1,
-                    cv : 1,
+                    cv: 1,
                     cvApplies: 1 // Giữ nguyên các tài liệu từ CvApply đã lấy được
                 }
             }
@@ -165,6 +169,7 @@ async function getAllAppliedJobOfPost(req, res) {
         });
     }
 }
+
 
 
 async function changeApplieJobStatus(req, res) {
