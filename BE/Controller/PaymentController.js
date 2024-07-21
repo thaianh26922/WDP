@@ -94,6 +94,7 @@ function  vnPayReturn(req, res, next) {
     let hmac = crypto.createHmac("sha512", secretKey);
     let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
         updateIsVipById(userId)
+        
         res.redirect("http://localhost:3000/");
 
    

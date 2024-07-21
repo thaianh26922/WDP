@@ -73,6 +73,7 @@ function JobOpportunitiesDetail(props) {
 
     const formData = new FormData();
     formData.append('pdfFile', pdfFile);
+    toast.success('Chọn Cv thành công');
 
     try {
       const response = await axios.post('http://localhost:9999/api/apply-job/upload', formData, {

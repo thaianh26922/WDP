@@ -9,17 +9,17 @@ import tutorialsdev from '../../assets/tutorialsdev.png'
 import Input from '../Input/index.js'
 import Cookies from 'js-cookie';
 
-function ChatWithHR({type}) {
+function ChatWithHR({ type }) {
 	const getUsers = useSelector(state => state.users.currentUser);
 
-    const [user, setUser] = useState(getUsers);
+	const [user, setUser] = useState(getUsers);
 	const [conversations, setConversations] = useState([])
 	const [messages, setMessages] = useState({})
 	const [message, setMessage] = useState('')
 	const [users, setUsers] = useState([])
 	const [socket, setSocket] = useState(null)
 	const messageRef = useRef(null)
-    const companydetail = useSelector((state) => state.companies.companyDetail);
+	const companydetail = useSelector((state) => state.companies.companyDetail);
 	const loggedInUser = useSelector((state) => state.users.currentUser);
 	const staff = JSON.parse(sessionStorage.getItem('staff')); // Parse JSON string to an object
 
@@ -33,69 +33,70 @@ function ChatWithHR({type}) {
 	}
 	const fetchAndSetConversations = async () => {
 		const getId = '';
-		
-		if(!isEmpty(loggedInUser)){
+
+		if (!isEmpty(loggedInUser)) {
 			var res = await fetch(`http://localhost:9999/api/conversations/${loggedInUser?._id}`, {
 				method: 'GET',
-				headers: { 
+				headers: {
 					'Content-Type': 'application/json',
 				}
 			});
-		}else{
-		var res = await fetch(`http://localhost:9999/api/conversations/${staff?._id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });		}
-        
-        const resData = await res.json();
-        console.log(resData);
-			if(!isEmpty(companydetail) && resData !== null){
-				var findReceiver = resData.find(value => {
-					return value.user.receiverId === companydetail?.hr._id;
-				});
-			}
-		
-        if(findReceiver == null && !isEmpty(companydetail)){
-            console.log("no conversation");
-            await createNewConversation(loggedInUser._id, companydetail?.hr._id);
-            fetchAndSetConversations(); // Gọi lại hàm fetchAndSetConversations
-        } else {
-            console.log(resData);
-            setConversations(resData);
-        }
-    };
+		} else {
+			var res = await fetch(`http://localhost:9999/api/conversations/${staff?._id}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			});
+		}
 
-    const createNewConversation = async (senderId, receiverId) => {
-        const resNew = await fetch(`http://localhost:9999/api/conversation`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                senderId,
-                receiverId
-            })
-        });
-        const resNewData = await resNew.json();
-        console.log(resNewData);
-        return resNewData;
-    };
+		const resData = await res.json();
+		console.log(resData);
+		if (!isEmpty(companydetail) && resData !== null) {
+			var findReceiver = resData.find(value => {
+				return value.user.receiverId === companydetail?.hr._id;
+			});
+		}
 
-    useEffect(() => {
-        fetchAndSetConversations();
-    }, []);
-console.log(conversations);
+		if (findReceiver == null && !isEmpty(companydetail)) {
+			console.log("no conversation");
+			await createNewConversation(loggedInUser._id, companydetail?.hr._id);
+			fetchAndSetConversations(); // Gọi lại hàm fetchAndSetConversations
+		} else {
+			console.log(resData);
+			setConversations(resData);
+		}
+	};
+
+	const createNewConversation = async (senderId, receiverId) => {
+		const resNew = await fetch(`http://localhost:9999/api/conversation`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				senderId,
+				receiverId
+			})
+		});
+		const resNewData = await resNew.json();
+		console.log(resNewData);
+		return resNewData;
+	};
+
+	useEffect(() => {
+		fetchAndSetConversations();
+	}, []);
+	console.log(conversations);
 	useEffect(() => {
 		setSocket(io('http://localhost:8081'))
 	}, [])
 
 	useEffect(() => {
 		console.log(user);
-		if(isEmpty(user)){
+		if (isEmpty(user)) {
 			socket?.emit('addUser', staff?._id);
-		}else{
+		} else {
 			socket?.emit('addUser', user?._id);
 		}
 		socket?.on('getUsers', users => {
@@ -143,7 +144,7 @@ console.log(conversations);
 
 	const sendMessage = async (e) => {
 		setMessage('')
-		if(isEmpty(user)){
+		if (isEmpty(user)) {
 			socket?.emit('sendMessage', {
 				senderId: staff?._id,
 				receiverId: messages?.receiver?.receiverId,
@@ -162,7 +163,7 @@ console.log(conversations);
 					receiverId: messages?.receiver?.receiverId
 				})
 			});
-		}else{
+		} else {
 			socket?.emit('sendMessage', {
 				senderId: user?._id,
 				receiverId: messages?.receiver?.receiverId,
@@ -182,8 +183,8 @@ console.log(conversations);
 				})
 			});
 		}
-		
-		
+
+
 	}
 
 	return (
@@ -245,9 +246,10 @@ console.log(conversations);
 								messages.messages.map(({ message, user: { id } = {} }) => {
 									return (
 										<>
-										<div className={`max-w-[40%] rounded-b-xl p-4 mb-6 ${id === user?._id ? 'bg-primary text-white rounded-tl-xl ml-auto' : 'bg-secondary rounded-tr-xl'} `}>{message}</div>
-										<div ref={messageRef}></div>
+											<div className={`max-w-[40%] rounded-b-xl p-4 mb-6 ${id === (isEmpty(user) ? staff._id : user?._id) ? 'bg-primary text-white rounded-tl-xl ml-auto' : 'bg-secondary rounded-tr-xl'}`}>{message}</div>
+											<div ref={messageRef}></div>
 										</>
+
 									)
 								}) : <div className='text-center text-lg font-semibold mt-24'>No Messages or No Conversation Selected</div>
 						}
@@ -275,7 +277,7 @@ console.log(conversations);
 					</div>
 				}
 			</div>
-		
+
 		</div>
 	)
 }

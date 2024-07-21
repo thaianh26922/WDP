@@ -119,7 +119,7 @@ function RecruimentPostHR(props) {
                                 <label htmlFor="salary" className='text-[#7b839b] leading-[3.5rem] cursor-pointer'>Lương: </label>
                                 <div className='flex align-items-center'>
                                     {/* <SalaryModal /> */}
-                                    <input ref={salary} type="number" className='w-[10rem] h-[2.5rem] border-b-2 border-solid border-gray-300 rounded-md pl-2' placeholder='Thỏa thuận' id='salary' />
+                                    <input ref={salary} type="number" min="0" className='w-[10rem] h-[2.5rem] border-b-2 border-solid border-gray-300 rounded-md pl-2' placeholder='Thỏa thuận' id='salary' />
                                 </div>
                             </div>
                             <div className='flex gap-x-4'>

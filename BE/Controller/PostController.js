@@ -2,12 +2,7 @@ import { searchByKeyword } from "../DAO/Search.js";
 import { Company } from "../Model/Company.js";
 import { Post } from "../Model/Post.js";
 import { User } from "../Model/User.js";
-/**
- * @name getAllPosts
- * @description Lấy tất cả bài viết từ database
- * @param {*} req 
- * @param {*} res 
- */
+
 
 
 async function getAllPosts(req, res) {
@@ -107,46 +102,45 @@ async function getPostById(req, res) {
     }
 }
 
-
 async function updatePost(req, res) {
     const postId = req.params.id;
+    console.log(postId);
+    console.log(req.body);
     try {
         const post = await Post.findById(postId);
         if (!post) {
-            res.status(404).json({
-                message: "Can not find post with id '" + postId + "'",
-            });
-        } else {
-            const newPost = await Post({
-                title: req.body.title,
-                jobDescription: req.body.jobDescription,
-                salary: req.body.salary,
-                candidateReq: req.body.candidateReq,
-                location: req.body.location,
-                deadline: req.body.deadline,
-            })
-            await newPost.save();
-            res.status(201).status({
-                message: "Update Post Successfully!",
-                data: newPost
+            return res.status(404).json({
+                message: "Cannot find post with id '" + postId + "'",
             });
         }
+
+        // Cập nhật thông tin bài viết
+        post.title = req.body.title;
+        post.jobDescription = req.body.jobDescription;
+        post.salary = req.body.salary;
+        post.candidateReq = req.body.candidateReq;
+        post.location = req.body.location;
+        post.deadline = req.body.deadline;
+
+        // Lưu thay đổi vào cơ sở dữ liệu
+        await post.save();
+
+        // Trả về phản hồi thành công
+        res.status(200).json({
+            message: "Update Post Successfully!",
+            data: post
+        });
     } catch (error) {
-        res.status(500).send({
+        console.error('Error updating post:', error); // Log lỗi để dễ dàng phát hiện
+        res.status(500).json({
             result: 'ERROR',
-            message: 'Đã có lỗi xảy ra! Vui lòng thử lại sau!',
+            message: 'Đã có lỗi xảy ra! Vui lòng thử lại sau!',
             err: error.message
         });
     }
 }
 
-/**
- * @author Dương Thành Luân
- * @date 27/02/2024
- * @param {*} req 
- * @param {*} res 
- * @returns 
- */
+
 async function getPostsByTitle(req, res) {
     const { title } = req.params;
     const { userId } = req.body;

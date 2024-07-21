@@ -34,8 +34,10 @@ function Home() {
         dispatch(getAllCategory());
         dispatch(getAllPost());
     }, [dispatch]);
-    const post = useSelector(state => state.jobPost.postArr);
-    const fetchPostbyUser = async (idUser) => {
+    const post = useSelector(state => state.jobPost.postArr).filter(item => {
+        const currentDate = new Date();
+        return new Date(item.deadline) >= currentDate;
+    });    const fetchPostbyUser = async (idUser) => {
         try {
             const postByUser = await axios.get(`http://localhost:9999/api/cv/${idUser}/chucvu`);
 
