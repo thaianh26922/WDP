@@ -59,7 +59,7 @@ const Router = () => {
             <Route path='/danh-sach-quan-li-trang-web' element={<ModController/>}/>
             <Route path='/danh-sach-quan-li-cong-ty' element={<CompanyController/>}/>
 
-            <Route>
+            <Route element={<RequireAuth />}>
                 {/* Private */}
                 <Route path='/tai-khoan' element={<MyAccount />} />
                 <Route path='/nang-cap' element={<UpgradeAccount />} />
@@ -71,12 +71,12 @@ const Router = () => {
                 <Route path='/co-hoi-nghe-nghiep/:tieu-de-cong-viec' element={<JobOpportunitiesDetail />} />
                 <Route path='/lien-he-voi-nha-tuyen-dung' element={<ChatWithHR type={1} />} />
             </Route>
-            <Route>
+            <Route element={<AuthenCompany />}>
                 <Route path='/ho-so-cong-ty' element={<CompanyProfile />} />
                 <Route path='/danh-sach-nhan-vien' element={<ListEmployees />} />
                 <Route path='/dang-ky-vip' element={<VIPRegister />} />
             </Route>
-            <Route>
+            <Route element={<AuthenStaff />}>
                 <Route path='/tao-bai-tuyen-dung' element={<RecruimentPostHR />} />
                 <Route path='/chinh-sua-bai-tuyen-dung/:pid' element={<EditPostHR />} />
                 <Route path='/danh-sach-cong-viec' element={<JobListHR />} />
